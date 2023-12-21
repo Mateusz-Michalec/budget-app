@@ -1,0 +1,13 @@
+@import "../../../../assets/variables.scss";
+
+.period-tabs {
+  ul {
+    display: flex;
+    justify-content: space-between;
+
+    li {
+      cursor: pointer;
+      transition: $t-1;
+    }
+  }
+}

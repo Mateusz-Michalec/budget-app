@@ -1,0 +1,34 @@
+@import "bootstrap-icons/font/bootstrap-icons.css";
+@import "./assets/variables.scss";
+@import "./assets/utility";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: $dark-green;
+  font-family: "Inter", sans-serif;
+  color: white;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+input {
+  border: none;
+}
+
+a {
+  text-decoration: none;
+  color: unset;
+}
+
+ul {
+  list-style: none;
+}

@@ -1,0 +1,25 @@
+@import "../../../../assets/variables.scss";
+
+.period-date {
+  margin-top: $m-2;
+  text-align: center;
+
+  &__inputs {
+    display: flex;
+    gap: $g-4;
+    justify-content: center;
+  }
+
+  &__picker {
+    input {
+      padding: $p-1;
+      border-radius: $br-1;
+      margin-left: $m-1;
+    }
+  }
+
+  h1 {
+    font-size: large;
+    margin-top: $m-2;
+  }
+}

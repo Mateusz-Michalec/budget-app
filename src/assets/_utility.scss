@@ -1,0 +1,23 @@
+.u-active-indicator {
+  position: relative;
+  opacity: 1;
+
+  &::after {
+    content: "";
+    width: 120%;
+    height: 2px;
+    background: white;
+    position: absolute;
+    left: 50%;
+    bottom: -4px;
+    transform: translate(-50%);
+  }
+}
+
+.u-muted {
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+  }
+}
