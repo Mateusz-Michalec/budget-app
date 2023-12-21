@@ -1,0 +1,40 @@
+@import "../../assets/variables.scss";
+
+.transaction {
+  &__type {
+    font-size: x-large;
+  }
+
+  &__amount {
+    margin: $m-2 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: $g-2;
+
+    input[type="number"] {
+      width: 150px;
+      text-align: center;
+      -moz-appearance: textfield;
+
+      /* Chrome, Safari, Edge, Opera */
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+    }
+  }
+
+  &__accounts {
+    display: flex;
+    flex-direction: column;
+    gap: $g-1;
+
+    select {
+      width: min-content;
+      border-radius: $br-1;
+      font-size: medium;
+    }
+  }
+}

@@ -20,8 +20,14 @@ button {
   cursor: pointer;
 }
 
-input {
+input,
+select {
   border: none;
+  padding: $p-1;
+  border-radius: $br-2;
+  font-weight: bold;
+  font-size: large;
+  color: $dark-green;
 }
 
 a {
@@ -31,4 +37,22 @@ a {
 
 ul {
   list-style: none;
+}
+
+.bi {
+  font-size: $i-2;
+  color: white;
+}
+
+.content-card {
+  background: $greyish-green;
+  border-radius: $br-2;
+  margin: -$m-2 auto 0;
+  padding: $p-3;
+  width: 90%;
+}
+
+.add-btn {
+  display: block;
+  margin: $m-1 auto $m-1;
 }

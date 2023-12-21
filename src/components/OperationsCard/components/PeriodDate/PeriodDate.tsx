@@ -4,19 +4,25 @@ import { DateUtils } from "../../../../utils";
 import "./PeriodDate.scss";
 import { DateUtilsType } from "../../../../utils/DateUtils";
 
-type PeriodDateProps = {
-  currentPeriod: Period;
-};
-
-type ControlledDate = {
+export type ControlledDate = {
   date: Date | undefined;
   formattedDate: string;
 };
 
-type ExtendedControlledDate = Partial<Omit<DateUtilsType, "date">> &
+export type ExtendedControlledDate = Partial<Omit<DateUtilsType, "date">> &
   ControlledDate;
 
-const PeriodDate = ({ currentPeriod }: PeriodDateProps) => {
+type PeriodDateProps = {
+  dates: {
+    date: ExtendedControlledDate;
+    setDate: React.Dispatch<React.SetStateAction<ExtendedControlledDate>>;
+    nextDate: ControlledDate;
+    setNextDate: React.Dispatch<React.SetStateAction<ControlledDate>>;
+  };
+  currentPeriod: Period;
+};
+
+const PeriodDate = ({ dates, currentPeriod }: PeriodDateProps) => {
   const getInitialDate = () => {
     switch (currentPeriod) {
       case "Dzień":
@@ -39,19 +45,9 @@ const PeriodDate = ({ currentPeriod }: PeriodDateProps) => {
     }
   };
 
-  const [date, setDate] = useState<ExtendedControlledDate>({
-    date: undefined,
-    formattedDate: "",
-  });
-
-  const [nextDate, setNextDate] = useState<ControlledDate>({
-    date: undefined,
-    formattedDate: "",
-  });
-
   useEffect(() => {
-    setDate(getInitialDate());
-    setNextDate(getInitialDate());
+    dates.setDate(getInitialDate());
+    dates.setNextDate(getInitialDate());
   }, [currentPeriod]);
 
   return (
@@ -62,12 +58,12 @@ const PeriodDate = ({ currentPeriod }: PeriodDateProps) => {
             <label htmlFor="fromDate">Od: </label>
             <input
               onChange={(e) =>
-                setDate({
+                dates.setDate({
                   date: new Date(e.target.value),
                   formattedDate: e.target.value,
                 })
               }
-              value={date.formattedDate}
+              value={dates.date.formattedDate}
               type="date"
               id="fromDate"
             />
@@ -77,20 +73,20 @@ const PeriodDate = ({ currentPeriod }: PeriodDateProps) => {
             <label htmlFor="toDate">Do: </label>
             <input
               onChange={(e) =>
-                setNextDate({
+                dates.setNextDate({
                   date: new Date(e.target.value),
                   formattedDate: e.target.value,
                 })
               }
-              value={nextDate.formattedDate}
+              value={dates.nextDate.formattedDate}
               type="date"
               id="toDate"
-              min={date.formattedDate}
+              min={dates.date.formattedDate}
             />
           </div>
         </div>
       ) : (
-        <h1>{date?.formattedDate}</h1>
+        <h1>{dates.date?.formattedDate}</h1>
       )}
     </header>
   );

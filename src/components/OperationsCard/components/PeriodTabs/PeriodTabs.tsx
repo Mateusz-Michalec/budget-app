@@ -16,6 +16,7 @@ const PeriodTabs = ({ currentPeriod, setCurrentPeriod }: PeriodTabsProps) => {
       <ul>
         {periods.map((period) => (
           <li
+            tabIndex={0}
             key={period}
             onClick={(e) => {
               const textContent = e.currentTarget.textContent;

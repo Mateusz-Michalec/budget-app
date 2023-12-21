@@ -1,0 +1,29 @@
+@import "../../../assets/variables.scss";
+
+.modal {
+  z-index: 10;
+  inset: 0;
+  margin: auto;
+  width: 80%;
+  border: 2px solid white;
+  border-radius: $br-2;
+  background: $saturated-green;
+
+  &__content {
+    padding: $p-3;
+    color: white;
+  }
+
+  &::backdrop {
+    background-color: rgba($color: black, $alpha: 0.5);
+  }
+
+  &__close {
+    display: block;
+    margin-left: auto;
+
+    .bi {
+      font-size: $i-1;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+@import "../../../../assets/variables.scss";
+
+.transaction__icons-wrapper {
+  margin: $m-2 0;
+
+  .transaction__icons {
+    display: flex;
+    gap: $g-3;
+    margin-top: $m-1;
+  }
+
+  .transaction__icon {
+    background-color: $ligt-green;
+    width: 55px;
+    height: 55px;
+    padding: $p-1;
+    border-radius: 50%;
+    transition: $t-1;
+
+    &:hover {
+      outline: 2px solid white;
+    }
+
+    &--active {
+      outline: 2px solid white;
+    }
+  }
+}
