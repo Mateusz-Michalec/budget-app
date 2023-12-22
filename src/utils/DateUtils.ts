@@ -5,7 +5,7 @@ export type DateUtilsType = {
   formattedDate: string;
 };
 
-type DateWithFormat = Pick<DateUtilsType, "date" | "formattedDate">;
+export type DateWithFormat = Pick<DateUtilsType, "date" | "formattedDate">;
 
 const getLocaleDate = (
   period: string
@@ -29,6 +29,15 @@ const getTodayDate = (): DateWithFormat => {
   return {
     date,
     formattedDate: `${formatDate(date)} (${localePeriod})`,
+  };
+};
+
+const getTodayPickerDate = () => {
+  const date = new Date();
+
+  return {
+    date: date,
+    formattedDate: date.toISOString().slice(0, 10),
   };
 };
 
@@ -62,4 +71,10 @@ const getCurrentYear = (): DateWithFormat => {
   };
 };
 
-export default { getTodayDate, getNextWeek, getCurrentMonth, getCurrentYear };
+export default {
+  getTodayDate,
+  getTodayPickerDate,
+  getNextWeek,
+  getCurrentMonth,
+  getCurrentYear,
+};

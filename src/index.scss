@@ -30,6 +30,11 @@ select {
   color: $dark-green;
 }
 
+select,
+input[type="date"] {
+  border-radius: $br-1;
+}
+
 a {
   text-decoration: none;
   color: unset;

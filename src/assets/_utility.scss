@@ -14,6 +14,18 @@
   }
 }
 
+.u-column-input {
+  display: flex;
+  flex-direction: column;
+  gap: $g-1;
+}
+
+.u-row-input {
+  display: flex;
+  align-items: center;
+  gap: $g-2;
+}
+
 .u-muted {
   opacity: 0.8;
 

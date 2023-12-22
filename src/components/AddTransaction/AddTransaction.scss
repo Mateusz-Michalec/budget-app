@@ -1,40 +1,62 @@
 @import "../../assets/variables.scss";
 
 .transaction {
+  display: flex;
+  flex-direction: column;
+  gap: $g-3;
+
   &__type {
     font-size: x-large;
   }
 
   &__amount {
-    margin: $m-2 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: $g-2;
+    width: 150px;
+    text-align: center;
+    -moz-appearance: textfield;
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
 
-    input[type="number"] {
-      width: 150px;
-      text-align: center;
-      -moz-appearance: textfield;
-
-      /* Chrome, Safari, Edge, Opera */
-      &::-webkit-outer-spin-button,
-      &::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-      }
+    &-wrapper {
+      display: flex;
+      align-items: center;
+      gap: $g-2;
+      justify-content: center;
     }
   }
 
   &__accounts {
-    display: flex;
-    flex-direction: column;
-    gap: $g-1;
-
-    select {
-      width: min-content;
-      border-radius: $br-1;
-      font-size: medium;
+    min-width: 150px;
+    width: min-content;
+    &-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: $g-1;
     }
+  }
+
+  &__date-wrapper {
+    min-width: 150px;
+    width: min-content;
+    @extend .transaction__accounts-wrapper;
+  }
+
+  &__desc {
+    display: flex;
+    gap: $g-1;
+  }
+
+  &__add-btn {
+    margin: $m-1 auto 0;
+    display: flex;
+    color: white;
+    font-weight: bold;
+    text-transform: uppercase;
+    align-items: center;
+    background: $greyish-green;
+    padding: $p-1 $p-3;
+    border-radius: $br-1;
   }
 }
