@@ -2,18 +2,41 @@ import React, { useState } from "react";
 import { OperationsType } from "../OperationsCard/OperationsCard";
 import "./AddTransaction.scss";
 import TransactionDescription from "./components/TransactionDescription/TransactionDescription";
-import { DateUtils } from "../../utils";
+import { DateUtils, LocalStorage } from "../../utils";
 import { DateWithFormat } from "../../utils/DateUtils";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  addTransaction,
+  getAccountIdByName,
+  getDefaultAccount,
+  selectAccountNames,
+} from "../../features/accounts/accountsSlice";
 
-const AddTransaction = ({ type }: OperationsType) => {
-  const todayDate = new Date();
+type AddTransactionProps = {
+  onAddTransaction: () => void | null;
+} & OperationsType;
 
+const AddTransaction = ({ type, onAddTransaction }: AddTransactionProps) => {
   const [amount, setAmount] = useState<number | string>("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
   const [date, setDate] = useState<DateWithFormat>(
     DateUtils.getTodayPickerDate()
   );
+
+  const isTransactionValid =
+    typeof amount === "number" && description.length > 0 && icon.length > 0;
+
+  const accountNames = useAppSelector(selectAccountNames);
+  const defaultAccount = useAppSelector(getDefaultAccount);
+
+  const [activeAccount, setActiveAccount] = useState(defaultAccount?.name);
+
+  const accountId = useAppSelector((state) =>
+    getAccountIdByName(state, activeAccount)
+  );
+
+  const dispatch = useAppDispatch();
 
   return (
     <div className="transaction">
@@ -38,9 +61,15 @@ const AddTransaction = ({ type }: OperationsType) => {
 
       <div className="transaction__accounts-wrapper">
         <label htmlFor="accounts">Konto:</label>
-        <select className="transaction__accounts" id="accounts">
-          <option>Bank</option>
-          <option>Skarbonka</option>
+        <select
+          defaultValue={activeAccount}
+          onChange={(e) => setActiveAccount(e.target.value)}
+          className="transaction__accounts"
+          id="accounts"
+        >
+          {accountNames.map((accountName) => (
+            <option key={accountName}>{accountName}</option>
+          ))}
         </select>
       </div>
 
@@ -66,7 +95,28 @@ const AddTransaction = ({ type }: OperationsType) => {
         setDescription={setDescription}
       />
 
-      <button type="button" className="transaction__add-btn">
+      <button
+        onClick={() => {
+          if (accountId && typeof amount === "number") {
+            dispatch(
+              addTransaction({
+                accountId,
+                amount,
+                description,
+                timestamp: date.date.getTime(),
+                icon,
+                type,
+              })
+            );
+            onAddTransaction();
+          }
+        }}
+        disabled={!isTransactionValid}
+        type="button"
+        className={`transaction__add-btn ${
+          isTransactionValid ? "" : "u-muted"
+        }`}
+      >
         <i className="bi bi-plus"></i>
         <span>Dodaj</span>
       </button>

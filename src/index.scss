@@ -18,21 +18,27 @@ button {
   background: none;
   border: none;
   cursor: pointer;
+  color: white;
+  font-size: medium;
 }
 
 input,
 select {
   border: none;
   padding: $p-1;
-  border-radius: $br-2;
+  border-radius: $br-1;
   font-weight: bold;
   font-size: large;
   color: $dark-green;
 }
 
-select,
-input[type="date"] {
-  border-radius: $br-1;
+input[type="number"] {
+  -moz-appearance: textfield;
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 }
 
 a {

@@ -1,6 +1,7 @@
 import React from "react";
 import "./Navbar.scss";
 import { useLocation } from "react-router-dom";
+import AccountsView from "./components/AccountsView/AccountsView";
 
 const Navbar = () => {
   const { pathname } = useLocation();
@@ -11,10 +12,7 @@ const Navbar = () => {
         <button type="button">
           <i className="bi bi-list"></i>
         </button>
-        <div className="nav__account">
-          <i className="bi bi-coin"></i>
-          <span>Suma: 2000 zł</span>
-        </div>
+        <AccountsView />
       </div>
       <ul className="nav__tabs">
         <li>

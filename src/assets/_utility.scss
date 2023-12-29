@@ -33,3 +33,20 @@
     opacity: 1;
   }
 }
+
+.u-btn-with-icon {
+  display: flex;
+  align-items: center;
+  gap: $g-1;
+}
+
+.u-input-column {
+  display: flex;
+  flex-direction: column;
+  gap: $g-1;
+  margin-bottom: $m-2;
+
+  input {
+    width: fit-content;
+  }
+}
