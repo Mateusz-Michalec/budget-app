@@ -1,53 +1,17 @@
-import React, { FormEvent, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Period } from "../PeriodTabs/PeriodTabs";
-import { DateUtils } from "../../../../utils";
 import "./PeriodDate.scss";
-import { DateUtilsType } from "../../../../utils/DateUtils";
-
-export type ControlledDate = {
-  date: Date | undefined;
-  formattedDate: string;
-};
-
-export type ExtendedControlledDate = Partial<Omit<DateUtilsType, "date">> &
-  ControlledDate;
+import DateUtils, { DatePicker } from "../../../../utils/DateUtils";
 
 type PeriodDateProps = {
-  dates: {
-    date: ExtendedControlledDate;
-    setDate: React.Dispatch<React.SetStateAction<ExtendedControlledDate>>;
-    nextDate: ControlledDate;
-    setNextDate: React.Dispatch<React.SetStateAction<ControlledDate>>;
-  };
+  date: DatePicker;
+  setDate: React.Dispatch<React.SetStateAction<DatePicker>>;
   currentPeriod: Period;
 };
 
-const PeriodDate = ({ dates, currentPeriod }: PeriodDateProps) => {
-  const getInitialDate = () => {
-    switch (currentPeriod) {
-      case "Dzień":
-        return DateUtils.getTodayDate();
-
-      case "Miesiąc":
-        return DateUtils.getCurrentMonth();
-
-      case "Rok":
-        return DateUtils.getCurrentYear();
-
-      case "Okres":
-        return {
-          date: undefined,
-          formattedDate: "",
-        };
-
-      default:
-        return DateUtils.getNextWeek();
-    }
-  };
-
+const PeriodDate = ({ date, setDate, currentPeriod }: PeriodDateProps) => {
   useEffect(() => {
-    dates.setDate(getInitialDate());
-    dates.setNextDate(getInitialDate());
+    setDate(DateUtils.getInitialPickerData(currentPeriod));
   }, [currentPeriod]);
 
   return (
@@ -58,12 +22,13 @@ const PeriodDate = ({ dates, currentPeriod }: PeriodDateProps) => {
             <label htmlFor="fromDate">Od: </label>
             <input
               onChange={(e) =>
-                dates.setDate({
+                setDate((prev) => ({
+                  ...prev,
                   date: new Date(e.target.value),
                   formattedDate: e.target.value,
-                })
+                }))
               }
-              value={dates.date.formattedDate}
+              value={date.formattedDate}
               type="date"
               id="fromDate"
             />
@@ -73,20 +38,21 @@ const PeriodDate = ({ dates, currentPeriod }: PeriodDateProps) => {
             <label htmlFor="toDate">Do: </label>
             <input
               onChange={(e) =>
-                dates.setNextDate({
-                  date: new Date(e.target.value),
-                  formattedDate: e.target.value,
-                })
+                setDate((prev) => ({
+                  ...prev,
+                  nextDate: new Date(e.target.value),
+                  formattedNextDate: e.target.value,
+                }))
               }
-              value={dates.nextDate.formattedDate}
+              value={date.formattedNextDate}
               type="date"
               id="toDate"
-              min={dates.date.formattedDate}
+              min={date.formattedDate}
             />
           </div>
         </div>
       ) : (
-        <h1>{dates.date?.formattedDate}</h1>
+        <h1>{DateUtils.getFormatedDateByPeriod(currentPeriod)}</h1>
       )}
     </header>
   );

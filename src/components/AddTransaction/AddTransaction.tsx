@@ -3,7 +3,6 @@ import { OperationsType } from "../OperationsCard/OperationsCard";
 import "./AddTransaction.scss";
 import TransactionDescription from "./components/TransactionDescription/TransactionDescription";
 import { DateUtils, LocalStorage } from "../../utils";
-import { DateWithFormat } from "../../utils/DateUtils";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   addTransaction,
@@ -14,15 +13,14 @@ import {
 
 type AddTransactionProps = {
   onAddTransaction: () => void | null;
-} & OperationsType;
+  type: OperationsType;
+};
 
 const AddTransaction = ({ type, onAddTransaction }: AddTransactionProps) => {
   const [amount, setAmount] = useState<number | string>("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
-  const [date, setDate] = useState<DateWithFormat>(
-    DateUtils.getTodayPickerDate()
-  );
+  const [date, setDate] = useState(DateUtils.getInitialPickerData());
 
   const isTransactionValid =
     typeof amount === "number" && description.length > 0 && icon.length > 0;
@@ -78,10 +76,11 @@ const AddTransaction = ({ type, onAddTransaction }: AddTransactionProps) => {
         <input
           value={date.formattedDate}
           onChange={(e) =>
-            setDate({
+            setDate((prev) => ({
+              ...prev,
               date: new Date(e.target.value),
               formattedDate: e.target.value,
-            })
+            }))
           }
           type="date"
           id="date"
@@ -103,7 +102,7 @@ const AddTransaction = ({ type, onAddTransaction }: AddTransactionProps) => {
                 accountId,
                 amount,
                 description,
-                timestamp: date.date.getTime(),
+                timestamp: date.date?.getTime()!,
                 icon,
                 type,
               })

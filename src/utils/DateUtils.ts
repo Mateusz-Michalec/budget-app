@@ -1,80 +1,89 @@
-export type DateUtilsType = {
-  date: Date;
-  nextDate: Date;
-  localePeriod: string;
+import { Period } from "../components/OperationsCard/components/PeriodTabs/PeriodTabs";
+
+export type DatePicker = {
+  date: Date | null;
   formattedDate: string;
+  nextDate: Date | null;
+  formattedNextDate: string;
 };
 
-export type DateWithFormat = Pick<DateUtilsType, "date" | "formattedDate">;
+const get7DaysLater = (date: Date) =>
+  new Date(date.setDate(date.getDate() + 7));
 
-const getLocaleDate = (
-  period: string
-): Pick<DateUtilsType, "date" | "localePeriod"> => {
+const getFormatedDateByPeriod = (period: Period): string => {
   const date = new Date();
-  const options = { [period]: "long", timeZone: "UTC" } as const;
-  const locale = "pl-PL";
+  let options = {};
 
-  return {
-    date: date,
-    localePeriod: new Intl.DateTimeFormat(locale, options).format(date),
-  };
+  switch (period) {
+    case "Dzień":
+      options = {
+        day: "numeric",
+        month: "long",
+        weekday: "long",
+      };
+      return date.toLocaleDateString("pl-PL", options);
+
+    case "Miesiąc":
+      options = {
+        month: "long",
+      };
+      return date.toLocaleDateString("pl-PL", options);
+
+    case "Rok":
+      return `${date.getFullYear()}`;
+
+    case "Okres":
+      return "Wybierz okres";
+
+    default:
+      return `${date.toLocaleDateString("pl-PL")} - ${get7DaysLater(
+        date
+      ).toLocaleDateString("pl-PL")}`;
+  }
 };
 
-const formatDate = (date: Date): string =>
-  `${date.getDate()}/${date.getMonth() + 1}`;
-
-const getTodayDate = (): DateWithFormat => {
-  const { date, localePeriod } = getLocaleDate("weekday");
-
-  return {
-    date,
-    formattedDate: `${formatDate(date)} (${localePeriod})`,
-  };
-};
-
-const getTodayPickerDate = () => {
+const getInitialPickerData = (currentPeriod: Period = "Dzień"): DatePicker => {
   const date = new Date();
 
-  return {
-    date: date,
-    formattedDate: date.toISOString().slice(0, 10),
-  };
+  switch (currentPeriod) {
+    case "Dzień":
+    case "Miesiąc":
+    case "Rok":
+      return {
+        date: date,
+        formattedDate: date.toISOString().slice(0, 10),
+        nextDate: null,
+        formattedNextDate: "",
+      };
+
+    case "Okres":
+      return {
+        date: null,
+        formattedDate: "",
+        nextDate: null,
+        formattedNextDate: "",
+      };
+
+    default:
+      return {
+        date: date,
+        formattedDate: "",
+        nextDate: get7DaysLater(new Date()),
+        formattedNextDate: "",
+      };
+  }
 };
 
-const getNextWeek = (): Omit<DateUtilsType, "localePeriod"> => {
-  const date = new Date();
+const isToday = (timestamp: number) => {
+  const today = new Date();
+  const dateToCheck = new Date(timestamp);
 
-  const nextWeek = new Date(date);
-  nextWeek.setDate(date.getDate() + 7);
+  const isToday =
+    today.getDate() === dateToCheck.getDate() &&
+    today.getMonth() === dateToCheck.getMonth() &&
+    today.getFullYear() === dateToCheck.getFullYear();
 
-  return {
-    date,
-    nextDate: nextWeek,
-    formattedDate: `${formatDate(date)} - ${formatDate(nextWeek)}`,
-  };
+  return isToday;
 };
 
-const getCurrentMonth = (): DateWithFormat => {
-  const { date, localePeriod } = getLocaleDate("month");
-
-  return {
-    date,
-    formattedDate: `${date.getMonth() + 1} (${localePeriod})`,
-  };
-};
-
-const getCurrentYear = (): DateWithFormat => {
-  const date = new Date();
-  return {
-    date,
-    formattedDate: `${date.getFullYear()}`,
-  };
-};
-
-export default {
-  getTodayDate,
-  getTodayPickerDate,
-  getNextWeek,
-  getCurrentMonth,
-  getCurrentYear,
-};
+export default { getFormatedDateByPeriod, getInitialPickerData, isToday };

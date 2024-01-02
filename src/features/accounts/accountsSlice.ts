@@ -7,10 +7,11 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { OperationsType } from "../../components/OperationsCard/OperationsCard";
+import { DateUtils } from "../../utils";
 
 export type Transaction = {
   id: string;
-  type: OperationsType["type"];
+  type: OperationsType;
   accountId: string;
   timestamp: number;
   amount: number;
@@ -25,6 +26,12 @@ export type Account = {
   expenses: Transaction[];
   incomes: Transaction[];
   defaultAccount: boolean;
+};
+
+type TransactionData = {
+  accountName: string;
+  timestampRange: [number, number];
+  type: OperationsType;
 };
 
 const accountsAdapter = createEntityAdapter<Account>({
@@ -107,24 +114,31 @@ export const getAccountBalanceByName = createSelector(
 export const selectTransactions = createSelector(
   [
     selectAllAccounts,
-    (state, accountName) => accountName,
-    (state, timestampRange) => timestampRange,
-    (state, type) => type,
+    (state, { accountName }: { accountName: string }) => accountName,
+    (
+      state,
+      { timestampRange }: { timestampRange: [number, number] | number }
+    ) => timestampRange,
+    (state, { type }: { type: OperationsType }) => type,
   ],
-  (accounts, { accountName, timestampRange, type }) => {
+  (accounts, accountName, timestampRange, type) => {
     const account = accounts.find((acc) => acc.name === accountName);
-    if (type === "expenses")
-      return account?.expenses.filter(
-        (transaction) =>
-          transaction.timestamp >= timestampRange[0] &&
-          transaction.timestamp <= timestampRange[1]
-      );
-    else
-      return account?.incomes.filter(
-        (transaction) =>
-          transaction.timestamp >= timestampRange[0] &&
-          transaction.timestamp <= timestampRange[1]
-      );
+
+    const transactions =
+      type === "expenses" ? account?.expenses : account?.incomes;
+
+    const filteredTransactions =
+      typeof timestampRange === "number"
+        ? transactions?.filter((transaction) =>
+            DateUtils.isToday(transaction.timestamp)
+          )
+        : transactions?.filter(
+            (transaction) =>
+              transaction.timestamp >= timestampRange[0] &&
+              transaction.timestamp <= timestampRange[1]
+          );
+
+    return filteredTransactions;
   }
 );
 
