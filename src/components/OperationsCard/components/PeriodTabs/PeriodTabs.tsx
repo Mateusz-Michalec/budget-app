@@ -1,7 +1,7 @@
 import React from "react";
 import "./PeriodTabs.scss";
 
-const periods = ["Dzień", "Tydzień", "Miesiąc", "Rok", "Okres"] as const;
+const periods = ["Dzień", "Tydzień", "Miesiąc", "Rok", "Zakres"] as const;
 
 export type Period = (typeof periods)[number];
 

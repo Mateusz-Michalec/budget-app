@@ -11,7 +11,7 @@ import { DateUtils } from "../../utils";
 
 export type Transaction = {
   id: string;
-  type: OperationsType;
+  operationType: OperationsType;
   accountId: string;
   timestamp: number;
   amount: number;
@@ -26,12 +26,6 @@ export type Account = {
   expenses: Transaction[];
   incomes: Transaction[];
   defaultAccount: boolean;
-};
-
-type TransactionData = {
-  accountName: string;
-  timestampRange: [number, number];
-  type: OperationsType;
 };
 
 const accountsAdapter = createEntityAdapter<Account>({
@@ -66,9 +60,9 @@ const accountsSlice = createSlice({
       state.entities[action.payload].defaultAccount = true;
     },
     addTransaction: (state, action: PayloadAction<Omit<Transaction, "id">>) => {
-      const { accountId, type, amount } = action.payload;
+      const { accountId, operationType, amount } = action.payload;
       const account = state.entities[accountId];
-      if (type === "expenses") {
+      if (operationType === "expenses") {
         account.expenses.push({ ...action.payload, id: nanoid() });
         account.balance -= amount;
       } else {
@@ -115,27 +109,27 @@ export const selectTransactions = createSelector(
   [
     selectAllAccounts,
     (state, { accountName }: { accountName: string }) => accountName,
-    (
-      state,
-      { timestampRange }: { timestampRange: [number, number] | number }
-    ) => timestampRange,
-    (state, { type }: { type: OperationsType }) => type,
+    (state, { timestamp }: { timestamp: [number, number] | number }) =>
+      timestamp,
+    (state, { operationType }: { operationType: OperationsType }) =>
+      operationType,
   ],
-  (accounts, accountName, timestampRange, type) => {
+  (accounts, accountName, timestamp, operationType) => {
     const account = accounts.find((acc) => acc.name === accountName);
 
     const transactions =
-      type === "expenses" ? account?.expenses : account?.incomes;
+      operationType === "expenses" ? account?.expenses : account?.incomes;
 
     const filteredTransactions =
-      typeof timestampRange === "number"
+      typeof timestamp === "number"
         ? transactions?.filter((transaction) =>
             DateUtils.isToday(transaction.timestamp)
           )
         : transactions?.filter(
             (transaction) =>
-              transaction.timestamp >= timestampRange[0] &&
-              transaction.timestamp <= timestampRange[1]
+              transaction.timestamp >= timestamp[0] ||
+              (DateUtils.isToday(transaction.timestamp) &&
+                transaction.timestamp <= timestamp[1])
           );
 
     return filteredTransactions;

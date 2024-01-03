@@ -1,75 +1,76 @@
 import { Period } from "../components/OperationsCard/components/PeriodTabs/PeriodTabs";
 
-export type DatePicker = {
+export type PeriodTab = {
   date: Date | null;
-  formattedDate: string;
-  nextDate: Date | null;
-  formattedNextDate: string;
+  formattedDate?: string;
+  nextDate?: Date | null;
+  formattedNextDate?: string;
+  label: string;
+  transactionsTimestamp: number | [number, number] | null;
 };
 
-const get7DaysLater = (date: Date) =>
+export type DatePicker = Pick<PeriodTab, "date" | "formattedDate">;
+
+const getInitialDatePickerData = (): DatePicker => {
+  const today = new Date();
+
+  return {
+    date: today,
+    formattedDate: today.toISOString().slice(0, 10),
+  };
+};
+
+const getNextWeekDate = (date: Date) =>
   new Date(date.setDate(date.getDate() + 7));
 
-const getFormatedDateByPeriod = (period: Period): string => {
-  const date = new Date();
-  let options = {};
+const getInitialPeriodTabData = (period: Period = "Tydzień"): PeriodTab => {
+  const today = new Date();
+  const todayTimestamp = today.getTime();
+  const plCode = "pl-PL";
+  const nextWeek = getNextWeekDate(new Date());
 
   switch (period) {
     case "Dzień":
-      options = {
-        day: "numeric",
-        month: "long",
-        weekday: "long",
+      return {
+        date: today,
+        transactionsTimestamp: todayTimestamp,
+        label: today.toLocaleDateString(plCode, {
+          day: "numeric",
+          month: "long",
+          weekday: "long",
+        }),
       };
-      return date.toLocaleDateString("pl-PL", options);
-
     case "Miesiąc":
-      options = {
-        month: "long",
+      return {
+        date: today,
+        transactionsTimestamp: todayTimestamp,
+        label: today.toLocaleDateString(plCode, { month: "long" }),
       };
-      return date.toLocaleDateString("pl-PL", options);
-
-    case "Rok":
-      return `${date.getFullYear()}`;
-
-    case "Okres":
-      return "Wybierz okres";
-
-    default:
-      return `${date.toLocaleDateString("pl-PL")} - ${get7DaysLater(
-        date
-      ).toLocaleDateString("pl-PL")}`;
-  }
-};
-
-const getInitialPickerData = (currentPeriod: Period = "Dzień"): DatePicker => {
-  const date = new Date();
-
-  switch (currentPeriod) {
-    case "Dzień":
-    case "Miesiąc":
     case "Rok":
       return {
-        date: date,
-        formattedDate: date.toISOString().slice(0, 10),
-        nextDate: null,
-        formattedNextDate: "",
+        date: today,
+        transactionsTimestamp: todayTimestamp,
+        label: `${today.getFullYear()}`,
       };
 
-    case "Okres":
+    case "Zakres":
       return {
         date: null,
         formattedDate: "",
         nextDate: null,
         formattedNextDate: "",
+        transactionsTimestamp: null,
+        label: "Wybierz zakres",
       };
 
     default:
       return {
-        date: date,
-        formattedDate: "",
-        nextDate: get7DaysLater(new Date()),
-        formattedNextDate: "",
+        date: today,
+        nextDate: nextWeek,
+        transactionsTimestamp: [todayTimestamp, nextWeek.getTime()],
+        label: `${today.toLocaleDateString(
+          plCode
+        )} - ${nextWeek.toLocaleDateString(plCode)}`,
       };
   }
 };
@@ -78,12 +79,34 @@ const isToday = (timestamp: number) => {
   const today = new Date();
   const dateToCheck = new Date(timestamp);
 
-  const isToday =
+  return (
     today.getDate() === dateToCheck.getDate() &&
     today.getMonth() === dateToCheck.getMonth() &&
-    today.getFullYear() === dateToCheck.getFullYear();
-
-  return isToday;
+    today.getFullYear() === dateToCheck.getFullYear()
+  );
 };
 
-export default { getFormatedDateByPeriod, getInitialPickerData, isToday };
+const isCurrentMonth = (timestamp: number) => {
+  const today = new Date();
+  const dateToCheck = new Date(timestamp);
+
+  return (
+    today.getMonth() === dateToCheck.getMonth() &&
+    today.getFullYear() === dateToCheck.getFullYear()
+  );
+};
+
+const isCurrentYear = (timestamp: number) => {
+  const today = new Date();
+  const dateToCheck = new Date(timestamp);
+
+  return today.getFullYear() === dateToCheck.getFullYear();
+};
+
+export default {
+  getInitialPeriodTabData,
+  getInitialDatePickerData,
+  isToday,
+  isCurrentMonth,
+  isCurrentYear,
+};

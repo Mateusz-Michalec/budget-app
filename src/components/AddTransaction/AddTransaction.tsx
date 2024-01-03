@@ -10,17 +10,23 @@ import {
   getDefaultAccount,
   selectAccountNames,
 } from "../../features/accounts/accountsSlice";
+import { DatePicker } from "../../utils/DateUtils";
 
 type AddTransactionProps = {
   onAddTransaction: () => void | null;
-  type: OperationsType;
+  operationType: OperationsType;
 };
 
-const AddTransaction = ({ type, onAddTransaction }: AddTransactionProps) => {
+const AddTransaction = ({
+  operationType,
+  onAddTransaction,
+}: AddTransactionProps) => {
   const [amount, setAmount] = useState<number | string>("");
   const [description, setDescription] = useState("");
   const [icon, setIcon] = useState("");
-  const [date, setDate] = useState(DateUtils.getInitialPickerData());
+  const [date, setDate] = useState<DatePicker>(
+    DateUtils.getInitialDatePickerData()
+  );
 
   const isTransactionValid =
     typeof amount === "number" && description.length > 0 && icon.length > 0;
@@ -40,7 +46,7 @@ const AddTransaction = ({ type, onAddTransaction }: AddTransactionProps) => {
     <div className="transaction">
       <header>
         <h1 className="transaction__type">
-          {type === "expenses" ? "Wydatki" : "Dochody"}
+          {operationType === "expenses" ? "Wydatki" : "Dochody"}
         </h1>
         <p>Dodawanie transakcji</p>
         <hr />
@@ -104,7 +110,7 @@ const AddTransaction = ({ type, onAddTransaction }: AddTransactionProps) => {
                 description,
                 timestamp: date.date?.getTime()!,
                 icon,
-                type,
+                operationType,
               })
             );
             onAddTransaction();

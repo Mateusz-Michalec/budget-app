@@ -1,0 +1,35 @@
+@import "../../assets/variables.scss";
+
+.transactions {
+  margin-top: $m-2;
+
+  &__sum {
+    opacity: 0.95;
+    margin-bottom: $m-2;
+  }
+
+  &__transaction {
+    display: flex;
+    align-items: center;
+    gap: $g-4;
+
+    &-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: $ligt-green;
+      padding: $p-1;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+  }
+
+  &__delete-btn {
+    margin-left: auto;
+
+    .bi {
+      font-size: larger;
+    }
+  }
+}

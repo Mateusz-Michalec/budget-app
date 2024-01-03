@@ -9,42 +9,48 @@ import AddTransaction from "../AddTransaction/AddTransaction";
 import { DateUtils } from "../../utils";
 import { useAppSelector } from "../../app/hooks";
 import {
-  Transaction,
   getDefaultAccount,
   selectTransactions,
 } from "../../features/accounts/accountsSlice";
-import { DatePicker } from "../../utils/DateUtils";
+
 import PeriodDate from "./components/PeriodDate/PeriodDate";
-import SingleTransaction from "../SingleTransaction/Transaction";
+import { PeriodTab } from "../../utils/DateUtils";
+import TransacionList from "../TransacionList/TransacionList";
 
 export type OperationsType = "expenses" | "incomes";
 
-const OperationsCard = ({ type }: { type: OperationsType }) => {
+const OperationsCard = ({
+  operationType,
+}: {
+  operationType: OperationsType;
+}) => {
   const modalRef = useRef<HTMLDialogElement>(null);
   const [currentPeriod, setCurrentPeriod] = useState<Period>("Tydzień");
 
-  const [date, setDate] = useState<DatePicker>(
-    DateUtils.getInitialPickerData(currentPeriod)
+  const [date, setDate] = useState<PeriodTab>(
+    DateUtils.getInitialPeriodTabData(currentPeriod)
   );
+
+  useEffect(() => {
+    setDate(DateUtils.getInitialPeriodTabData(currentPeriod));
+  }, [currentPeriod]);
+
+  console.log(date);
 
   // Transactions
   const activeAccountName = useAppSelector(getDefaultAccount)?.name;
 
-  const timestamp =
-    currentPeriod === "Dzień"
-      ? date.date?.getTime()
-      : [date.date?.getTime(), date.nextDate?.getTime()];
+  const transactions = useAppSelector((state) => {
+    if (date.transactionsTimestamp)
+      return selectTransactions(state, {
+        accountName: activeAccountName!,
+        timestamp: date.transactionsTimestamp,
+        operationType,
+      });
+  });
 
-  const transactions = useAppSelector((state) =>
-    selectTransactions(state, {
-      accountName: activeAccountName!,
-      timestampRange: timestamp as [number, number],
-      type,
-    })
-  );
-  //
-
-  const isAddBtnDisabled = currentPeriod === "Okres" && date.nextDate === null;
+  const isAddBtnDisabled =
+    currentPeriod === "Zakres" && date.date === null && date.nextDate === null;
 
   const onAddTransaction = () =>
     modalRef.current ? modalRef.current.close() : null;
@@ -57,14 +63,20 @@ const OperationsCard = ({ type }: { type: OperationsType }) => {
       />
       <PeriodDate date={date} setDate={setDate} currentPeriod={currentPeriod} />
       {}
-      <SingleTransaction />
+      <TransacionList
+        operationType={operationType}
+        transactions={transactions}
+      />
       <AddBtn
         disabled={isAddBtnDisabled}
         onClick={() => (modalRef.current ? modalRef.current.showModal() : null)}
       />
 
       <Modal ref={modalRef}>
-        <AddTransaction type={type} onAddTransaction={onAddTransaction} />
+        <AddTransaction
+          operationType={operationType}
+          onAddTransaction={onAddTransaction}
+        />
       </Modal>
     </ContentCard>
   );
