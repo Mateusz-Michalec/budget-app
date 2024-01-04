@@ -12,7 +12,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: $m-2;
+    margin-bottom: $m-1;
 
     .bi-list {
       color: white;
@@ -27,18 +27,6 @@
       .bi {
         font-size: $i-1;
       }
-    }
-  }
-
-  &__tabs {
-    list-style: none;
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: $m-1;
-
-    a {
-      text-transform: uppercase;
-      transition: $t-1;
     }
   }
 }

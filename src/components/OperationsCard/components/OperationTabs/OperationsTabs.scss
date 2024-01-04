@@ -1,0 +1,13 @@
+@import "../../../../assets/variables.scss";
+
+.operation-tabs {
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: $m-1;
+
+  li {
+    text-transform: uppercase;
+    transition: $t-1;
+  }
+}

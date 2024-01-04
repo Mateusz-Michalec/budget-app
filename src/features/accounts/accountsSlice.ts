@@ -8,6 +8,7 @@ import {
 import { RootState } from "../../app/store";
 import { OperationsType } from "../../components/OperationsCard/OperationsCard";
 import { DateUtils } from "../../utils";
+import { Period } from "../../components/OperationsCard/components/PeriodTabs/PeriodTabs";
 
 export type Transaction = {
   id: string;
@@ -70,6 +71,26 @@ const accountsSlice = createSlice({
         account.balance += amount;
       }
     },
+    editTransaction: (
+      state,
+      action: PayloadAction<Omit<Transaction, "id" | "operationType">>
+    ) => {
+      // const { accountId, amount, description, timestamp, icon } =
+      //   action.payload;
+    },
+    deleteTransaction: (
+      state,
+      action: PayloadAction<
+        Pick<Transaction, "id" | "accountId" | "operationType">
+      >
+    ) => {
+      const { id, accountId, operationType } = action.payload;
+      const accountTransactions = state.entities[accountId][operationType];
+
+      state.entities[accountId][operationType] = accountTransactions.filter(
+        (transaction) => transaction.id !== id
+      );
+    },
   },
 });
 
@@ -98,7 +119,8 @@ export const getDefaultAccount = createSelector(
 export const getAccountBalanceByName = createSelector(
   [selectAllAccounts, (state, accountName) => accountName],
   (accounts, accountName) => {
-    if (accountName.toLowerCase() === "suma")
+    if (!accountName) return null;
+    else if (accountName.toLowerCase() === "suma")
       return accounts.reduce((sum, account) => sum + account.balance, 0);
     else
       return accounts.find((account) => account.name === accountName)?.balance;
@@ -109,30 +131,34 @@ export const selectTransactions = createSelector(
   [
     selectAllAccounts,
     (state, { accountName }: { accountName: string }) => accountName,
+    (state, { period }: { period: Period }) => period,
     (state, { timestamp }: { timestamp: [number, number] | number }) =>
       timestamp,
     (state, { operationType }: { operationType: OperationsType }) =>
       operationType,
   ],
-  (accounts, accountName, timestamp, operationType) => {
+  (accounts, accountName, period, timestamp, operationType) => {
     const account = accounts.find((acc) => acc.name === accountName);
 
     const transactions =
       operationType === "expenses" ? account?.expenses : account?.incomes;
 
-    const filteredTransactions =
-      typeof timestamp === "number"
-        ? transactions?.filter((transaction) =>
-            DateUtils.isToday(transaction.timestamp)
-          )
-        : transactions?.filter(
-            (transaction) =>
-              transaction.timestamp >= timestamp[0] ||
-              (DateUtils.isToday(transaction.timestamp) &&
-                transaction.timestamp <= timestamp[1])
+    return transactions?.filter((transaction) => {
+      switch (period) {
+        case "Dzień":
+          return DateUtils.isToday(transaction.timestamp);
+        case "Miesiąc":
+          return DateUtils.isCurrentMonth(transaction.timestamp);
+        case "Rok":
+          return DateUtils.isCurrentYear(transaction.timestamp);
+        default:
+          return (
+            transaction.timestamp >= (timestamp as [number, number])[0] ||
+            (DateUtils.isToday(transaction.timestamp) &&
+              transaction.timestamp <= (timestamp as [number, number])[1])
           );
-
-    return filteredTransactions;
+      }
+    });
   }
 );
 
@@ -141,6 +167,8 @@ export const {
   hydrateAccounts,
   setDefaultAccount,
   addTransaction,
+  editTransaction,
+  deleteTransaction,
 } = accountsSlice.actions;
 
 export default accountsSlice.reducer;

@@ -6,16 +6,19 @@ import {
   selectAccountNames,
 } from "../../../../features/accounts/accountsSlice";
 import { useState } from "react";
+import useModal from "../../../../hooks/useModal";
+import Modal from "../../../ui/Modal/Modal";
 
 const AccountsView = () => {
   const accountNames = useAppSelector(selectAccountNames);
   const defaultAccount = useAppSelector(getDefaultAccount);
 
   const [activeAccount, setActiveAccount] = useState(defaultAccount?.name);
-
-  const accountBalance = useAppSelector((state) =>
+  const activeAccountBalance = useAppSelector((state) =>
     getAccountBalanceByName(state, activeAccount)
   );
+
+  const { modalRef, isModal, showModal, closeModal } = useModal();
 
   return (
     <div className="nav__account">
@@ -32,11 +35,23 @@ const AccountsView = () => {
             <option>Suma</option>
           </select>
           <span>
-            <b>{accountBalance} zł</b>
+            <b>{activeAccountBalance} zł</b>
           </span>
         </>
       ) : (
-        <AddNewAccount />
+        <>
+          <button
+            type="button"
+            onClick={() => showModal()}
+            className="u-btn-with-icon"
+          >
+            <i className="bi bi-database-add"></i>
+            <span>Dodaj konto</span>
+          </button>
+          <Modal isModal={isModal} ref={modalRef} closeModal={closeModal}>
+            <AddNewAccount closeModal={closeModal} />
+          </Modal>
+        </>
       )}
     </div>
   );

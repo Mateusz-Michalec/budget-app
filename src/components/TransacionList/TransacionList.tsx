@@ -1,11 +1,14 @@
-import React from "react";
-import { useAppSelector } from "../../app/hooks";
+import React, { useState } from "react";
+import { useAppDispatch } from "../../app/hooks";
 import {
   Transaction,
-  getDefaultAccount,
+  deleteTransaction,
 } from "../../features/accounts/accountsSlice";
 import "./TransacionList.scss";
 import { OperationsType } from "../OperationsCard/OperationsCard";
+import Modal from "../ui/Modal/Modal";
+import AddEditTransaction from "../AddTransaction/AddEditTransaction";
+import useModal from "../../hooks/useModal";
 
 type TransactionListProps = {
   operationType: OperationsType;
@@ -18,6 +21,15 @@ const TransacionList = ({
   transactions,
   operationType,
 }: TransactionListProps) => {
+  const dispatch = useAppDispatch();
+
+  const { modalRef, isModal, closeModal, showModal } = useModal();
+
+  const [transactionToEdit, setTransactionToEdit] = useState<null | Omit<
+    Transaction,
+    "id" | "operationType"
+  >>(null);
+
   const transactionsSum = transactions?.reduce(
     (acc, transaction) => acc + transaction.amount,
     0
@@ -38,37 +50,79 @@ const TransacionList = ({
 
   return (
     <>
+      <Modal ref={modalRef} isModal={isModal} closeModal={closeModal}>
+        <AddEditTransaction
+          transaction={transactionToEdit}
+          operationType={operationType}
+          closeModal={closeModal}
+        />
+      </Modal>
+
       {groupedTransactions ? (
         <section className="transactions">
-          <div className="transactions__sum">Suma: {transactionsSum} PLN</div>
+          <p className="transactions__sum">Suma: {transactionsSum} PLN</p>
 
           {Object.entries(groupedTransactions).map(([date, transactions]) => (
             <div key={date} className="transactions__group">
-              <p>{date}</p>
-              {transactions.map((transaction) => (
-                <div className="transactions__transaction" key={transaction.id}>
-                  <i
-                    className={`bi transactions__transaction-icon bi-${transaction.icon}`}
-                  ></i>
-                  <span> {transaction.description}</span>
+              <p className="transactions__date">{date}</p>
+              {transactions.map((transaction) => {
+                const {
+                  accountId,
+                  amount,
+                  description,
+                  id,
+                  icon,
+                  operationType,
+                } = transaction;
+                return (
+                  <div className="transactions__transaction" key={id}>
+                    <i
+                      className={`bi transactions__transaction-icon bi-${icon}`}
+                    ></i>
+                    <span> {description}</span>
 
-                  <div>
-                    <span>{operationType === "expenses" ? "▼ " : "▲ "}</span>
-                    <span>{transaction.amount} PLN</span>
+                    <span className="transactions__amount">
+                      {operationType === "expenses" ? "▼ " : "▲ "}
+                      {amount} PLN
+                    </span>
+
+                    <button
+                      onClick={() => {
+                        showModal();
+                        setTransactionToEdit({
+                          accountId,
+                          amount,
+                          description,
+                          icon,
+                          timestamp: transaction.timestamp,
+                        });
+                      }}
+                      className="transactions__manipulate-btn"
+                      aria-label="edytuj transakcję"
+                    >
+                      <i className="bi bi-pencil-square"></i>
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        dispatch(
+                          deleteTransaction({ id, accountId, operationType })
+                        )
+                      }
+                      className="transactions__manipulate-btn"
+                      aria-label="usuń transakcję"
+                    >
+                      <i className="bi bi-trash3"></i>
+                    </button>
                   </div>
-
-                  <button
-                    className="transactions__delete-btn"
-                    aria-label="usuń transakcję"
-                  >
-                    <i className="bi bi-trash3"></i>
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ))}
         </section>
-      ) : null}
+      ) : (
+        <p className="transactions__sum">Brak transakcji</p>
+      )}
     </>
   );
 };

@@ -4,13 +4,16 @@ import { createPortal } from "react-dom";
 
 type ModalProps = {
   children: ReactNode;
+  closeModal: () => void;
+  isModal: boolean;
 };
 
 const Modal = forwardRef(
-  ({ children }: ModalProps, ref: ForwardedRef<HTMLDialogElement>) => {
-    const closeModal = () =>
-      typeof ref !== "function" && ref?.current ? ref?.current.close() : null;
-
+  (
+    { children, closeModal, isModal }: ModalProps,
+    ref: ForwardedRef<HTMLDialogElement>
+  ) => {
+    if (!isModal) return null;
     return createPortal(
       <dialog onClick={() => closeModal()} ref={ref} className="modal">
         <div onClick={(e) => e.stopPropagation()} className="modal__content">

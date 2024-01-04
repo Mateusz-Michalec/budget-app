@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { OperationsType } from "../OperationsCard/OperationsCard";
-import "./AddTransaction.scss";
+import "./AddEditTransaction.scss";
 import TransactionDescription from "./components/TransactionDescription/TransactionDescription";
-import { DateUtils, LocalStorage } from "../../utils";
+import { DateUtils } from "../../utils";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
+  Transaction,
   addTransaction,
   getAccountIdByName,
   getDefaultAccount,
@@ -12,21 +13,35 @@ import {
 } from "../../features/accounts/accountsSlice";
 import { DatePicker } from "../../utils/DateUtils";
 
-type AddTransactionProps = {
-  onAddTransaction: () => void | null;
+type AddEditTransactionProps = {
+  closeModal: () => void | null;
   operationType: OperationsType;
+  transaction?: null | Omit<Transaction, "id" | "operationType">;
 };
 
-const AddTransaction = ({
+const AddEditTransaction = ({
   operationType,
-  onAddTransaction,
-}: AddTransactionProps) => {
-  const [amount, setAmount] = useState<number | string>("");
-  const [description, setDescription] = useState("");
-  const [icon, setIcon] = useState("");
-  const [date, setDate] = useState<DatePicker>(
-    DateUtils.getInitialDatePickerData()
+  closeModal,
+  transaction,
+}: AddEditTransactionProps) => {
+  const getInitialDate = () => {
+    if (transaction) {
+      const date = new Date(transaction.timestamp);
+      return {
+        date,
+        formattedDate: date.toISOString().slice(0, 10),
+      };
+    } else return DateUtils.getInitialDatePickerData();
+  };
+
+  const [amount, setAmount] = useState<number | string>(
+    transaction?.amount || ""
   );
+  const [description, setDescription] = useState(
+    transaction?.description || ""
+  );
+  const [icon, setIcon] = useState(transaction?.icon || "");
+  const [date, setDate] = useState<DatePicker>(getInitialDate());
 
   const isTransactionValid =
     typeof amount === "number" && description.length > 0 && icon.length > 0;
@@ -48,7 +63,7 @@ const AddTransaction = ({
         <h1 className="transaction__type">
           {operationType === "expenses" ? "Wydatki" : "Dochody"}
         </h1>
-        <p>Dodawanie transakcji</p>
+        <p>{transaction ? "Edycja" : "Dodawanie"} transakcji</p>
         <hr />
       </header>
 
@@ -102,7 +117,7 @@ const AddTransaction = ({
 
       <button
         onClick={() => {
-          if (accountId && typeof amount === "number") {
+          if (accountId && typeof amount === "number" && !transaction) {
             dispatch(
               addTransaction({
                 accountId,
@@ -113,7 +128,7 @@ const AddTransaction = ({
                 operationType,
               })
             );
-            onAddTransaction();
+            closeModal();
           }
         }}
         disabled={!isTransactionValid}
@@ -122,11 +137,10 @@ const AddTransaction = ({
           isTransactionValid ? "" : "u-muted"
         }`}
       >
-        <i className="bi bi-plus"></i>
-        <span>Dodaj</span>
+        <span>{transaction ? "Zapisz" : "Dodaj"}</span>
       </button>
     </div>
   );
 };
 
-export default AddTransaction;
+export default AddEditTransaction;
