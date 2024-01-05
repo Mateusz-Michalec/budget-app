@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Period } from "../PeriodTabs/PeriodTabs";
 import "./PeriodDate.scss";
 import { PeriodTab } from "../../../../utils/DateUtils";
@@ -14,11 +14,9 @@ const PeriodDate = ({ date, setDate, currentPeriod }: PeriodDateProps) => {
     <header className="period-date">
       {currentPeriod === "Zakres" ? (
         <>
-          {date.transactionsTimestamp ? null : (
-            <h1 className="period-date__label">{date.label}</h1>
-          )}
+          {date.transactionsTimestamp ? null : <h1>{date.label}</h1>}
           <div className="period-date__inputs">
-            <div className="period-date__picker">
+            <div className="u-row-input">
               <label htmlFor="fromDate">Od: </label>
               <input
                 onChange={(e) =>
@@ -28,13 +26,14 @@ const PeriodDate = ({ date, setDate, currentPeriod }: PeriodDateProps) => {
                     formattedDate: e.target.value,
                   }))
                 }
+                className="period-date__date-picker"
                 value={date.formattedDate || ""}
                 type="date"
                 id="fromDate"
               />
             </div>
 
-            <div className="period-date__picker">
+            <div className="u-row-input">
               <label htmlFor="toDate">Do: </label>
               <input
                 onChange={(e) =>
@@ -51,6 +50,7 @@ const PeriodDate = ({ date, setDate, currentPeriod }: PeriodDateProps) => {
                     };
                   })
                 }
+                className="period-date__date-picker"
                 value={date.formattedNextDate || ""}
                 type="date"
                 id="toDate"

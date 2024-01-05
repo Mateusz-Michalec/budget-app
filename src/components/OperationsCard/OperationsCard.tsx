@@ -1,8 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./OperationsCard.scss";
 import PeriodTabs, { Period } from "./components/PeriodTabs/PeriodTabs";
-import "./OperationsCard.scss";
-import ContentCard from "../ui/ContentCard";
 import { DateUtils } from "../../utils";
 import { useAppSelector } from "../../app/hooks";
 import {
@@ -26,10 +23,6 @@ const OperationsCard = () => {
     DateUtils.getInitialPeriodTabData(currentPeriod)
   );
 
-  useEffect(() => {
-    setDate(DateUtils.getInitialPeriodTabData(currentPeriod));
-  }, [currentPeriod]);
-
   // Transactions
   const activeAccountName = useAppSelector(getDefaultAccount)?.name;
 
@@ -44,21 +37,24 @@ const OperationsCard = () => {
   });
 
   return (
-    <ContentCard>
+    <>
       <OperationTabs
         operationType={operationType}
         setOperationType={setOperationType}
       />
       <PeriodTabs
+        setDate={setDate}
         currentPeriod={currentPeriod}
         setCurrentPeriod={setCurrentPeriod}
       />
       <PeriodDate date={date} setDate={setDate} currentPeriod={currentPeriod} />
-      <TransacionList
-        operationType={operationType}
-        transactions={transactions}
-      />
-    </ContentCard>
+      {transactions ? (
+        <TransacionList
+          operationType={operationType}
+          transactions={transactions}
+        />
+      ) : null}
+    </>
   );
 };
 

@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import {
   Transaction,
   addTransaction,
+  editTransaction,
   getAccountIdByName,
   getDefaultAccount,
   selectAccountNames,
@@ -16,7 +17,7 @@ import { DatePicker } from "../../utils/DateUtils";
 type AddEditTransactionProps = {
   closeModal: () => void | null;
   operationType: OperationsType;
-  transaction?: null | Omit<Transaction, "id" | "operationType">;
+  transaction?: null | Transaction;
 };
 
 const AddEditTransaction = ({
@@ -24,15 +25,7 @@ const AddEditTransaction = ({
   closeModal,
   transaction,
 }: AddEditTransactionProps) => {
-  const getInitialDate = () => {
-    if (transaction) {
-      const date = new Date(transaction.timestamp);
-      return {
-        date,
-        formattedDate: date.toISOString().slice(0, 10),
-      };
-    } else return DateUtils.getInitialDatePickerData();
-  };
+  const dispatch = useAppDispatch();
 
   const [amount, setAmount] = useState<number | string>(
     transaction?.amount || ""
@@ -40,36 +33,35 @@ const AddEditTransaction = ({
   const [description, setDescription] = useState(
     transaction?.description || ""
   );
-  const [icon, setIcon] = useState(transaction?.icon || "");
-  const [date, setDate] = useState<DatePicker>(getInitialDate());
+  const [category, setCategory] = useState(transaction?.category || "");
+  const [date, setDate] = useState<DatePicker>(
+    DateUtils.getInitialDatePickerData(transaction?.timestamp)
+  );
 
   const isTransactionValid =
-    typeof amount === "number" && description.length > 0 && icon.length > 0;
+    typeof amount === "number" && description.length > 0 && category.length > 0;
 
   const accountNames = useAppSelector(selectAccountNames);
+
   const defaultAccount = useAppSelector(getDefaultAccount);
-
   const [activeAccount, setActiveAccount] = useState(defaultAccount?.name);
-
   const accountId = useAppSelector((state) =>
     getAccountIdByName(state, activeAccount)
   );
 
-  const dispatch = useAppDispatch();
-
   return (
-    <div className="transaction">
+    <div className="add-edit-transaction">
       <header>
-        <h1 className="transaction__type">
+        <h2 className="add-edit-transaction__type">
           {operationType === "expenses" ? "Wydatki" : "Dochody"}
-        </h1>
+        </h2>
         <p>{transaction ? "Edycja" : "Dodawanie"} transakcji</p>
         <hr />
       </header>
 
-      <div className="transaction__amount-wrapper">
+      <div className="u-row-input add-edit-transaction__amount-group">
         <input
-          className="transaction__amount"
+          className="add-edit-transaction__amount"
           value={amount}
           onChange={(e) => setAmount(Number(e.target.value))}
           id="amount"
@@ -78,12 +70,12 @@ const AddEditTransaction = ({
         <label htmlFor="amount">PLN</label>
       </div>
 
-      <div className="transaction__accounts-wrapper">
+      <div className="u-column-input">
         <label htmlFor="accounts">Konto:</label>
         <select
           defaultValue={activeAccount}
           onChange={(e) => setActiveAccount(e.target.value)}
-          className="transaction__accounts"
+          className="add-edit-transaction__accounts"
           id="accounts"
         >
           {accountNames.map((accountName) => (
@@ -92,9 +84,10 @@ const AddEditTransaction = ({
         </select>
       </div>
 
-      <div className="transaction__date-wrapper">
+      <div className="u-column-input">
         <label htmlFor="date">Data:</label>
         <input
+          className="add-edit-transaction__date"
           value={date.formattedDate}
           onChange={(e) =>
             setDate((prev) => ({
@@ -109,35 +102,46 @@ const AddEditTransaction = ({
       </div>
 
       <TransactionDescription
-        icon={icon}
-        setIcon={setIcon}
+        category={category}
+        setCategory={setCategory}
         description={description}
         setDescription={setDescription}
       />
 
       <button
         onClick={() => {
-          if (accountId && typeof amount === "number" && !transaction) {
-            dispatch(
-              addTransaction({
-                accountId,
-                amount,
-                description,
-                timestamp: date.date?.getTime()!,
-                icon,
-                operationType,
-              })
-            );
-            closeModal();
+          if (accountId && typeof amount === "number") {
+            if (!transaction)
+              dispatch(
+                addTransaction({
+                  accountId,
+                  amount,
+                  description,
+                  timestamp: date.date?.getTime()!,
+                  category,
+                  operationType,
+                })
+              );
+            else
+              dispatch(
+                editTransaction({
+                  ...transaction,
+                  accountId,
+                  amount,
+                  description,
+                  timestamp: date.date?.getTime()!,
+                  category,
+                  operationType,
+                })
+              );
           }
+          closeModal();
         }}
         disabled={!isTransactionValid}
         type="button"
-        className={`transaction__add-btn ${
-          isTransactionValid ? "" : "u-muted"
-        }`}
+        className={`u-btn ${isTransactionValid ? "" : "u-muted"}`}
       >
-        <span>{transaction ? "Zapisz" : "Dodaj"}</span>
+        {transaction ? "Zapisz" : "Dodaj"}
       </button>
     </div>
   );

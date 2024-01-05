@@ -17,7 +17,7 @@ export type Transaction = {
   timestamp: number;
   amount: number;
   description: string;
-  icon: string;
+  category: string;
 };
 
 export type Account = {
@@ -71,12 +71,19 @@ const accountsSlice = createSlice({
         account.balance += amount;
       }
     },
-    editTransaction: (
-      state,
-      action: PayloadAction<Omit<Transaction, "id" | "operationType">>
-    ) => {
-      // const { accountId, amount, description, timestamp, icon } =
-      //   action.payload;
+    editTransaction: (state, action: PayloadAction<Transaction>) => {
+      const { id, operationType, accountId } = action.payload;
+
+      const accountTransactions = state.entities[accountId][operationType];
+
+      const indexToUpdate = accountTransactions.findIndex(
+        (transaction) => transaction.id === id
+      );
+
+      state.entities[accountId].balance +=
+        accountTransactions[indexToUpdate].amount - action.payload.amount;
+
+      state.entities[accountId][operationType][indexToUpdate] = action.payload;
     },
     deleteTransaction: (
       state,

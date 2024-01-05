@@ -11,12 +11,17 @@ export type PeriodTab = {
 
 export type DatePicker = Pick<PeriodTab, "date" | "formattedDate">;
 
-const getInitialDatePickerData = (): DatePicker => {
-  const today = new Date();
+const getInitialDatePickerData = (
+  timestamp: null | number = null
+): DatePicker => {
+  let date;
+
+  if (timestamp) date = new Date(timestamp);
+  else date = new Date();
 
   return {
-    date: today,
-    formattedDate: today.toISOString().slice(0, 10),
+    date,
+    formattedDate: date.toISOString().slice(0, 10),
   };
 };
 

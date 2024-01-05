@@ -1,18 +1,24 @@
 @import "../../../../assets/variables.scss";
 
-.transaction__description {
-  .transaction__icons {
+.add-edit-transaction__description {
+  .add-edit-transaction__header {
+    font-weight: normal;
+    font-size: 1rem;
+  }
+  .add-edit-transaction__category {
+    position: absolute;
+    bottom: -22px;
+  }
+
+  .add-edit-transaction__icons {
     display: flex;
-    gap: $g-3;
-    margin-top: $m-1;
+    gap: $g-5;
+    margin-top: $m-2;
+    margin-bottom: calc($m-2 + 22px);
+    flex-wrap: wrap;
 
-    .transaction__icon {
-      background-color: $ligt-green;
-      width: 55px;
-      height: 55px;
-      padding: $p-1;
-      border-radius: 50%;
-
+    .add-edit-transaction__icon {
+      position: relative;
       &:hover {
         outline: 2px solid white;
       }
@@ -21,12 +27,5 @@
         outline: 2px solid white;
       }
     }
-  }
-
-  .transaction__brief-desc {
-    margin-top: $m-1;
-    display: flex;
-    align-items: center;
-    gap: $g-2;
   }
 }

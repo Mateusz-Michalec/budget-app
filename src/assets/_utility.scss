@@ -1,3 +1,5 @@
+@import "../assets/variables.scss";
+
 .u-active-indicator {
   position: relative;
   opacity: 1;
@@ -18,16 +20,22 @@
   display: flex;
   flex-direction: column;
   gap: $g-1;
+  margin-bottom: $m-2;
+
+  input {
+    width: 200px;
+  }
 }
 
 .u-row-input {
-  display: flex;
+  @extend .u-column-input;
+  flex-direction: row;
   align-items: center;
-  gap: $g-2;
 }
 
 .u-muted {
   opacity: 0.8;
+  border: none !important;
 
   &:hover {
     opacity: 1;
@@ -40,18 +48,44 @@
   gap: $g-1;
 }
 
-.u-input-column {
-  display: flex;
-  flex-direction: column;
-  gap: $g-1;
-  margin-bottom: $m-2;
+.u-icon-btn {
+  display: block;
+  margin: 0 auto;
 
-  input {
-    width: fit-content;
+  .bi {
+    font-size: $i-3;
   }
 }
 
-.u-add-btn {
+.u-icon-circle {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: $ligt-green;
+  width: 50px;
+  height: 50px;
+  padding: $p-1;
+  border-radius: 50%;
+
+  .bi {
+    font-size: $i-2;
+  }
+}
+
+.u-btn {
   display: block;
-  margin: 0 auto $m-2;
+  margin: 0 auto;
+  background: $greyish-green;
+  padding: $p-1 $p-3;
+  border-radius: $br-1;
+  font-weight: bold;
+  border: 1px solid white;
+}
+
+.u-content-card {
+  background: $greyish-green;
+  border-radius: $br-2;
+  margin: -$m-3 auto 0;
+  padding: $p-3;
+  width: 90%;
 }

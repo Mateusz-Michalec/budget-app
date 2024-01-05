@@ -6,7 +6,7 @@ const Layout = () => {
   return (
     <>
       <Navbar />
-      <main>
+      <main className="u-content-card">
         <Outlet />
       </main>
     </>

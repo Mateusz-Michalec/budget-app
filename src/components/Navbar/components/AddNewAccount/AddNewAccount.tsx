@@ -1,7 +1,8 @@
-import React, { useRef, useState } from "react";
-import Modal from "./ui/Modal/Modal";
-import { useAppDispatch } from "../app/hooks";
-import { addAccount } from "../features/accounts/accountsSlice";
+import React, { useState } from "react";
+
+import { useAppDispatch } from "../../../../app/hooks";
+import { addAccount } from "../../../../features/accounts/accountsSlice";
+import "./AddNewAccout.scss";
 
 type AddNewAccountProps = {
   closeModal: () => void;
@@ -24,8 +25,8 @@ const AddNewAccount = ({ closeModal }: AddNewAccountProps) => {
   };
 
   return (
-    <>
-      <div className="u-input-column">
+    <section className="add-new-account">
+      <div className="u-column-input">
         <label htmlFor="accountName">Nazwa konta:</label>
         <input
           placeholder="np. Bank"
@@ -37,7 +38,7 @@ const AddNewAccount = ({ closeModal }: AddNewAccountProps) => {
         />
       </div>
 
-      <div className="u-input-column">
+      <div className="u-column-input ">
         <label htmlFor="accountAmount">Kwota na koncie (PLN):</label>
         <input
           id="accountAmount"
@@ -46,7 +47,15 @@ const AddNewAccount = ({ closeModal }: AddNewAccountProps) => {
           onChange={(e) => setAccountBalance(Number(e.target.value))}
         />
       </div>
-    </>
+
+      <button
+        disabled={!isDataValid}
+        onClick={() => addNewAccount()}
+        className={`u-btn ${isDataValid ? "" : "u-muted"}`}
+      >
+        Dodaj
+      </button>
+    </section>
   );
 };
 

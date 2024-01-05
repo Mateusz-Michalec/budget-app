@@ -44,7 +44,7 @@ const OperationTabs = ({
         </li>
       </ul>
 
-      <button type="button" className="u-add-btn" onClick={() => showModal()}>
+      <button type="button" className="u-icon-btn" onClick={() => showModal()}>
         <i className="bi bi-plus-circle"></i>
       </button>
     </>

@@ -5,22 +5,18 @@
 
   &__inputs {
     display: flex;
-    gap: $g-4;
+    flex-wrap: wrap;
+    column-gap: $g-4;
     justify-content: center;
     margin-top: $m-2;
-  }
 
-  &__picker {
-    input {
-      padding: $p-1;
-      border-radius: $br-1;
-      margin-left: $m-1;
-      margin-bottom: $m-1;
+    .period-date__date-picker {
+      width: min-content;
     }
   }
 
   h1 {
     font-size: large;
-    margin-top: $m-2;
+    margin-top: $m-1;
   }
 }

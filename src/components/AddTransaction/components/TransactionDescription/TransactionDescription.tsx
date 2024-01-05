@@ -1,45 +1,52 @@
 import React from "react";
 import "./TransactionDescription.scss";
+import { TransactionsUtils } from "../../../../utils";
 
 type TransactionDescriptionProps = {
-  icon: string;
-  setIcon: React.Dispatch<React.SetStateAction<string>>;
+  category: string;
+  setCategory: React.Dispatch<React.SetStateAction<string>>;
   description: string;
   setDescription: React.Dispatch<React.SetStateAction<string>>;
 };
 
 const TransactionDescription = ({
-  icon,
-  setIcon,
+  category,
+  setCategory,
   description,
   setDescription,
 }: TransactionDescriptionProps) => {
-  const icons = ["bag", "cart", "cash-coin"];
-
   return (
-    <section className="transaction__description">
+    <section className="add-edit-transaction__description">
       <header>
-        <h3>Ikona</h3>
+        <h3 className="add-edit-transaction__header">
+          Kategoria i opis transakcji
+        </h3>
         <hr />
       </header>
-      <div className="transaction__icons">
-        {icons.map((i) => (
-          <button
-            key={i}
-            onClick={() => setIcon(i)}
-            type="button"
-            className={`transaction__icon ${
-              icon === i ? "transaction__icon--active" : "u-muted"
-            }`}
-            aria-label="Wybierz ikonę"
-          >
-            <i className={`bi bi-${i}`}></i>
-          </button>
-        ))}
+      <div className="add-edit-transaction__icons">
+        {Array.from(TransactionsUtils.categories.entries()).map(
+          ([icon, cat]) => (
+            <button
+              key={icon}
+              onClick={() => setCategory(cat)}
+              type="button"
+              className={`add-edit-transaction__icon u-icon-circle ${
+                category === cat
+                  ? "add-edit-transaction__icon--active"
+                  : "u-muted"
+              }`}
+              aria-label="Wybierz kategorię"
+            >
+              <i className={`bi bi-${icon}`}></i>
+              <p className="add-edit-transaction__category">{cat}</p>
+            </button>
+          )
+        )}
       </div>
-      <div className="transaction__brief-desc">
-        <label htmlFor="description">Opis transakcji:</label>
+      <div className="u-row-input">
+        <label htmlFor="description">Opis:</label>
         <input
+          className="add-edit-transaction__desc"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           id="description"

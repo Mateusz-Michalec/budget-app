@@ -1,11 +1,11 @@
-import AddNewAccount from "../../../AddNewAccount";
+import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import { useAppSelector } from "../../../../app/hooks";
 import {
   getAccountBalanceByName,
   getDefaultAccount,
   selectAccountNames,
 } from "../../../../features/accounts/accountsSlice";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useModal from "../../../../hooks/useModal";
 import Modal from "../../../ui/Modal/Modal";
 
@@ -17,6 +17,10 @@ const AccountsView = () => {
   const activeAccountBalance = useAppSelector((state) =>
     getAccountBalanceByName(state, activeAccount)
   );
+
+  useEffect(() => {
+    setActiveAccount(defaultAccount?.name);
+  }, [defaultAccount]);
 
   const { modalRef, isModal, showModal, closeModal } = useModal();
 
