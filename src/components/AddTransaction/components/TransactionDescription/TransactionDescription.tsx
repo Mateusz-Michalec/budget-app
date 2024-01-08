@@ -24,24 +24,23 @@ const TransactionDescription = ({
         <hr />
       </header>
       <div className="add-edit-transaction__icons">
-        {Array.from(TransactionsUtils.categories.entries()).map(
-          ([icon, cat]) => (
-            <button
-              key={icon}
-              onClick={() => setCategory(cat)}
-              type="button"
-              className={`add-edit-transaction__icon u-icon-circle ${
-                category === cat
-                  ? "add-edit-transaction__icon--active"
-                  : "u-muted"
-              }`}
-              aria-label="Wybierz kategorię"
-            >
-              <i className={`bi bi-${icon}`}></i>
-              <p className="add-edit-transaction__category">{cat}</p>
-            </button>
-          )
-        )}
+        {Object.entries(TransactionsUtils.categories).map(([cat, icon]) => (
+          <button
+            key={cat}
+            onClick={() => setCategory(cat)}
+            type="button"
+            style={{ backgroundColor: icon.bgColor }}
+            className={`add-edit-transaction__icon u-icon-circle ${
+              category === cat
+                ? "add-edit-transaction__icon--active"
+                : "u-muted"
+            }`}
+            aria-label="Wybierz kategorię"
+          >
+            <i className={`bi bi-${icon.icon}`}></i>
+            <p className="add-edit-transaction__category">{cat}</p>
+          </button>
+        ))}
       </div>
       <div className="u-row-input">
         <label htmlFor="description">Opis:</label>

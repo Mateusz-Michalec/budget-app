@@ -10,13 +10,13 @@ import Modal from "../ui/Modal/Modal";
 import AddEditTransaction from "../AddTransaction/AddEditTransaction";
 import useModal from "../../hooks/useModal";
 import { TransactionsUtils } from "../../utils";
+import PieChart from "./components/CategoriesChart/CategoriesChart";
+import CategoriesChart from "./components/CategoriesChart/CategoriesChart";
 
 type TransactionListProps = {
   operationType: OperationsType;
-  transactions: Transaction[] | undefined;
+  transactions: Transaction[];
 };
-
-type TransactionGroups = Record<string, Transaction[]>;
 
 const TransacionList = ({
   transactions,
@@ -29,23 +29,10 @@ const TransacionList = ({
   const [transactionToEdit, setTransactionToEdit] =
     useState<null | Transaction>(null);
 
-  const transactionsSum = transactions?.reduce(
-    (acc, transaction) => acc + transaction.amount,
-    0
-  );
+  const transactionsSum = TransactionsUtils.getTransactionsSum(transactions);
 
-  const groupedTransactions = transactions?.reduce(
-    (groups: TransactionGroups, transaction) => {
-      const date = new Date(transaction.timestamp).toLocaleDateString();
-
-      if (!groups[date]) groups[date] = [];
-
-      groups[date].push(transaction);
-
-      return groups;
-    },
-    {}
-  );
+  const groupedTransactions =
+    TransactionsUtils.getGroupedTransactions(transactions);
 
   return (
     <>
@@ -60,6 +47,7 @@ const TransacionList = ({
       {groupedTransactions && transactions?.length! > 0 ? (
         <section className="transactions">
           <p className="transactions__sum">Suma: {transactionsSum} PLN</p>
+          <CategoriesChart transactions={transactions} />
 
           {Object.entries(groupedTransactions).map(([date, transactions]) => (
             <div key={date} className="transactions__group">
@@ -73,14 +61,16 @@ const TransacionList = ({
                   category,
                   operationType,
                 } = transaction;
+
+                const icon = TransactionsUtils.getTransactionIcon(category);
+
                 return (
                   <div className="transactions__transaction" key={id}>
-                    <span className="u-icon-circle">
-                      <i
-                        className={`bi bi-${TransactionsUtils.getTransactionIconByCategory(
-                          category
-                        )}`}
-                      ></i>
+                    <span
+                      style={{ backgroundColor: icon.bgColor }}
+                      className="u-icon-circle"
+                    >
+                      <i className={`bi bi-${icon.icon}`}></i>
                     </span>
                     <div className="transactions__transaction-details">
                       <span>{description}</span>
