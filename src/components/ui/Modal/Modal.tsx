@@ -3,7 +3,7 @@ import "./Modal.scss";
 import { createPortal } from "react-dom";
 
 type ModalProps = {
-  children: ReactNode;
+  children?: ReactNode;
   closeModal: () => void;
   isModal: boolean;
 };

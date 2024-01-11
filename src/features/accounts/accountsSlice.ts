@@ -73,14 +73,13 @@ const accountsSlice = createSlice({
     },
     editTransaction: (state, action: PayloadAction<Transaction>) => {
       const { id, operationType, accountId } = action.payload;
-
-      const accountTransactions = state.entities[accountId][operationType];
-
+      const account = state.entities[accountId];
+      const accountTransactions = account[operationType];
       const indexToUpdate = accountTransactions.findIndex(
         (transaction) => transaction.id === id
       );
 
-      state.entities[accountId].balance +=
+      account.balance +=
         accountTransactions[indexToUpdate].amount - action.payload.amount;
 
       state.entities[accountId][operationType][indexToUpdate] = action.payload;
@@ -88,15 +87,17 @@ const accountsSlice = createSlice({
     deleteTransaction: (
       state,
       action: PayloadAction<
-        Pick<Transaction, "id" | "accountId" | "operationType">
+        Pick<Transaction, "id" | "accountId" | "operationType" | "amount">
       >
     ) => {
-      const { id, accountId, operationType } = action.payload;
-      const accountTransactions = state.entities[accountId][operationType];
+      const { id, accountId, operationType, amount } = action.payload;
+      const account = state.entities[accountId];
+      const accountTransactions = account[operationType];
 
       state.entities[accountId][operationType] = accountTransactions.filter(
         (transaction) => transaction.id !== id
       );
+      account.balance += amount;
     },
   },
 });

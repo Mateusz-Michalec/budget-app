@@ -1,15 +1,5 @@
 import { Transaction } from "../features/accounts/accountsSlice";
 
-type TransactionIcon = {
-  icon: string;
-  bgColor: string;
-};
-
-type CategoryStats = {
-  totalAmount: number;
-  totalPercentage: number;
-};
-
 type Icon =
   | "bag"
   | "cart"
@@ -19,9 +9,14 @@ type Icon =
   | "airplane"
   | "controller";
 
-type TransactionGroups = Record<string, Transaction[]>;
+type TransactionIcon = {
+  icon: Icon;
+  bgColor: string;
+};
 
-type TransactionCategories = Record<Icon, CategoryStats>;
+export type CategoriesTotalAmount = Record<string, number>;
+
+type TransactionGroups = Record<string, Transaction[]>;
 
 const categories: Record<string, TransactionIcon> = {
   różne: {

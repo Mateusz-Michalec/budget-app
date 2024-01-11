@@ -1,7 +1,7 @@
 import React from "react";
-import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { Transaction } from "../../../../features/accounts/accountsSlice";
-import { TransactionsUtils } from "../../../../utils";
+import { PieChartUtils, TransactionsUtils } from "../../../../utils";
 
 type CategoriesChartProps = {
   transactions: Transaction[];
@@ -10,69 +10,33 @@ type CategoriesChartProps = {
 const CategoriesChart = ({ transactions }: CategoriesChartProps) => {
   const categoriesTotalAmount =
     TransactionsUtils.getCategoriesTotalAmount(transactions);
-
-  console.log(categoriesTotalAmount);
-
-  const chartData = Object.entries(categoriesTotalAmount).map(
-    ([category, totalAmount]) => {
-      return {
-        name: category,
-        value: totalAmount,
-      };
-    }
-  );
-
-  const chartColors = Object.entries(categoriesTotalAmount).map(([category]) =>
-    TransactionsUtils.getCategoryColor(category)
-  );
-
-  const RADIAN = Math.PI / 180;
-  const renderCustomizedLabel = ({
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    percent,
-    index,
-  }) => {
-    const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-    const x = cx + radius * Math.cos(-midAngle * RADIAN);
-    const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-    return (
-      <text
-        x={x}
-        y={y}
-        fill="white"
-        textAnchor={x > cx ? "start" : "end"}
-        dominantBaseline="central"
-      >
-        {`${(percent * 100).toFixed(0)}%`}
-      </text>
-    );
-  };
+  const chartData = PieChartUtils.getChartData(categoriesTotalAmount);
+  const chartColors = PieChartUtils.getChartColors(categoriesTotalAmount);
 
   return (
-    <PieChart width={400} height={400}>
-      <Pie
-        data={chartData}
-        cx={200}
-        cy={200}
-        labelLine={false}
-        label={renderCustomizedLabel}
-        outerRadius={80}
-        fill="#8884d8"
-        dataKey="value"
-      >
-        {chartData.map((entry, index) => (
-          <Cell
-            key={`cell-${index}`}
-            fill={chartColors[index % chartColors.length]}
-          />
-        ))}
-      </Pie>
-    </PieChart>
+    <ResponsiveContainer width="100%" height={200}>
+      <PieChart margin={{ top: -10 }}>
+        <Legend iconType="circle" />
+        <Pie
+          isAnimationActive={false}
+          data={chartData}
+          cx="50%"
+          cy="50%"
+          labelLine={false}
+          label={PieChartUtils.renderCustomizedLabel}
+          outerRadius={80}
+          fill="#8884d8"
+          dataKey="value"
+        >
+          {chartData.map((entry, index) => (
+            <Cell
+              key={`cell-${index}`}
+              fill={chartColors[index % chartColors.length]}
+            />
+          ))}
+        </Pie>
+      </PieChart>
+    </ResponsiveContainer>
   );
 };
 

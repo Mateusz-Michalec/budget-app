@@ -10,7 +10,6 @@ import Modal from "../ui/Modal/Modal";
 import AddEditTransaction from "../AddTransaction/AddEditTransaction";
 import useModal from "../../hooks/useModal";
 import { TransactionsUtils } from "../../utils";
-import PieChart from "./components/CategoriesChart/CategoriesChart";
 import CategoriesChart from "./components/CategoriesChart/CategoriesChart";
 
 type TransactionListProps = {
@@ -96,7 +95,12 @@ const TransacionList = ({
                       <button
                         onClick={() =>
                           dispatch(
-                            deleteTransaction({ id, accountId, operationType })
+                            deleteTransaction({
+                              id,
+                              accountId,
+                              operationType,
+                              amount,
+                            })
                           )
                         }
                         className="transactions__manipulate-btn"

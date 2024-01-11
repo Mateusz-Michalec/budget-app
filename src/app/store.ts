@@ -2,6 +2,8 @@ import { PayloadAction, configureStore, isAnyOf } from "@reduxjs/toolkit";
 import accountsSlice, {
   addAccount,
   addTransaction,
+  deleteTransaction,
+  editTransaction,
   hydrateAccounts,
 } from "../features/accounts/accountsSlice";
 import { listenerMiddleware, startAppListening } from "./listenerMiddleware";
@@ -9,7 +11,12 @@ import { LocalStorage } from "../utils";
 import { ACCOUNTS_KEY } from "../utils/LocalStorage";
 
 startAppListening({
-  matcher: isAnyOf(addAccount, addTransaction),
+  matcher: isAnyOf(
+    addAccount,
+    addTransaction,
+    editTransaction,
+    deleteTransaction
+  ),
   effect: (action, listenerApi) =>
     LocalStorage.saveData(listenerApi.getState().accounts, ACCOUNTS_KEY),
 });
