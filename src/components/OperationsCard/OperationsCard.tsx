@@ -38,16 +38,22 @@ const OperationsCard = () => {
 
   return (
     <>
-      <OperationTabs
-        operationType={operationType}
-        setOperationType={setOperationType}
-      />
-      <PeriodTabs
-        setDate={setDate}
-        currentPeriod={currentPeriod}
-        setCurrentPeriod={setCurrentPeriod}
-      />
-      <PeriodDate date={date} setDate={setDate} currentPeriod={currentPeriod} />
+      <div className="u-sticky">
+        <OperationTabs
+          operationType={operationType}
+          setOperationType={setOperationType}
+        />
+        <PeriodTabs
+          setDate={setDate}
+          currentPeriod={currentPeriod}
+          setCurrentPeriod={setCurrentPeriod}
+        />
+        <PeriodDate
+          date={date}
+          setDate={setDate}
+          currentPeriod={currentPeriod}
+        />
+      </div>
       {transactions ? (
         <TransacionList
           operationType={operationType}

@@ -11,6 +11,7 @@ import AddEditTransaction from "../AddTransaction/AddEditTransaction";
 import useModal from "../../hooks/useModal";
 import { TransactionsUtils } from "../../utils";
 import CategoriesChart from "./components/CategoriesChart/CategoriesChart";
+import CategoriesStats from "./components/CategoriesChart/CategoriesStats/CategoriesStats";
 
 type TransactionListProps = {
   operationType: OperationsType;
@@ -29,6 +30,8 @@ const TransacionList = ({
     useState<null | Transaction>(null);
 
   const transactionsSum = TransactionsUtils.getTransactionsSum(transactions);
+  const categoriesTotalAmount =
+    TransactionsUtils.getCategoriesTotalAmount(transactions);
 
   const groupedTransactions =
     TransactionsUtils.getGroupedTransactions(transactions);
@@ -46,7 +49,8 @@ const TransacionList = ({
       {groupedTransactions && transactions?.length! > 0 ? (
         <section className="transactions">
           <p className="transactions__sum">Suma: {transactionsSum} PLN</p>
-          <CategoriesChart transactions={transactions} />
+          <CategoriesChart categoriesTotalAmount={categoriesTotalAmount} />
+          <CategoriesStats categoriesTotalAmount={categoriesTotalAmount} />
 
           {Object.entries(groupedTransactions).map(([date, transactions]) => (
             <div key={date} className="transactions__group">
@@ -74,10 +78,7 @@ const TransacionList = ({
                     <div className="transactions__transaction-details">
                       <span>{description}</span>
 
-                      <span className="transactions__amount">
-                        {operationType === "expenses" ? "▼ " : "▲ "}
-                        {amount} PLN
-                      </span>
+                      <span className="transactions__amount">{amount} PLN</span>
                     </div>
 
                     <div className="transactions__manipulate-btns">
@@ -86,7 +87,7 @@ const TransacionList = ({
                           showModal();
                           setTransactionToEdit(transaction);
                         }}
-                        className="transactions__manipulate-btn"
+                        className="transactions__manipulate-btn u-muted"
                         aria-label="edytuj transakcję"
                       >
                         <i className="bi bi-pencil-square"></i>
@@ -103,7 +104,7 @@ const TransacionList = ({
                             })
                           )
                         }
-                        className="transactions__manipulate-btn"
+                        className="transactions__manipulate-btn u-muted"
                         aria-label="usuń transakcję"
                       >
                         <i className="bi bi-trash3"></i>

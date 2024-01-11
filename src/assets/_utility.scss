@@ -88,4 +88,23 @@
   margin: -$m-3 auto 0;
   padding: $p-3;
   width: 90%;
+  max-height: calc(100vh - $nav-height);
+  overflow-y: scroll;
+}
+
+.u-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: $greyish-green;
+  padding-bottom: $p-2;
+
+  &::after {
+    content: "";
+    width: 100%;
+    height: $p-3;
+    position: absolute;
+    top: -$p-3;
+    background-color: inherit;
+  }
 }

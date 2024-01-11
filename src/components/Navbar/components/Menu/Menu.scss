@@ -1,0 +1,59 @@
+@import "../../../../assets/variables.scss";
+
+.nav {
+  &__menu {
+    visibility: hidden;
+    position: absolute;
+    z-index: 89;
+    top: 0;
+    left: -150px;
+    display: flex;
+    flex-direction: column;
+    gap: $g-3;
+    transition: $t-1;
+    background: $ligt-green;
+    padding: $p-4;
+    padding-top: calc($i-3 + $m-4);
+    border-bottom-left-radius: $br-2;
+    border-bottom-right-radius: $br-2;
+
+    &-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 88;
+
+      &--active {
+        display: block;
+      }
+    }
+
+    &--open {
+      visibility: visible;
+      left: 0;
+    }
+
+    &-link {
+      a {
+        display: flex;
+        align-items: center;
+        gap: $g-1;
+      }
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .nav {
+    &__menu {
+      visibility: visible;
+      gap: $g-5;
+      position: unset;
+      flex-direction: row;
+      padding: 0;
+    }
+  }
+}

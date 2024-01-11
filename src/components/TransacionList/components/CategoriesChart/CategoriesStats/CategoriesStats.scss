@@ -1,0 +1,17 @@
+@import "../../../../../assets/variables.scss";
+
+.categories-stats {
+  overflow-x: auto;
+  margin-top: -$g-2;
+  padding: $p-2;
+  border-radius: $br-2;
+  border: 1px solid rgba($color: white, $alpha: 0.1);
+  display: flex;
+  gap: $g-4;
+
+  .categories__category-summary {
+    display: flex;
+    align-items: center;
+    gap: $g-1;
+  }
+}

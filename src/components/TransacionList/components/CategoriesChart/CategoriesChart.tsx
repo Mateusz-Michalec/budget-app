@@ -1,22 +1,24 @@
 import React from "react";
 import { Cell, Legend, Pie, PieChart, ResponsiveContainer } from "recharts";
-import { Transaction } from "../../../../features/accounts/accountsSlice";
-import { PieChartUtils, TransactionsUtils } from "../../../../utils";
+import { PieChartUtils } from "../../../../utils";
 
 type CategoriesChartProps = {
-  transactions: Transaction[];
+  categoriesTotalAmount: Record<string, number>;
 };
 
-const CategoriesChart = ({ transactions }: CategoriesChartProps) => {
-  const categoriesTotalAmount =
-    TransactionsUtils.getCategoriesTotalAmount(transactions);
+const CategoriesChart = ({ categoriesTotalAmount }: CategoriesChartProps) => {
   const chartData = PieChartUtils.getChartData(categoriesTotalAmount);
   const chartColors = PieChartUtils.getChartColors(categoriesTotalAmount);
 
   return (
-    <ResponsiveContainer width="100%" height={200}>
-      <PieChart margin={{ top: -10 }}>
-        <Legend iconType="circle" />
+    <ResponsiveContainer width="100%" height={180}>
+      <PieChart>
+        <Legend
+          iconType="circle"
+          align="right"
+          layout="vertical"
+          verticalAlign="middle"
+        />
         <Pie
           isAnimationActive={false}
           data={chartData}

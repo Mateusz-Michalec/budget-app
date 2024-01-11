@@ -1,15 +1,12 @@
 import "./Navbar.scss";
 import AccountsView from "./components/AccountsView/AccountsView";
+import Menu from "./components/Menu/Menu";
 
 const Navbar = () => {
   return (
     <nav className="nav">
-      <div className="nav__options">
-        <button type="button" aria-label="menu">
-          <i className="bi bi-list"></i>
-        </button>
-        <AccountsView />
-      </div>
+      <Menu />
+      <AccountsView />
     </nav>
   );
 };
