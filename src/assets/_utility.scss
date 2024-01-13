@@ -82,14 +82,14 @@
   border: 1px solid white;
 }
 
-.u-content-card {
+.u-main-container {
   background: $greyish-green;
   border-radius: $br-2;
   margin: -$m-3 auto 0;
   padding: $p-3;
   width: 90%;
   max-height: calc(100vh - $nav-height);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .u-sticky {
@@ -107,4 +107,12 @@
     top: -$p-3;
     background-color: inherit;
   }
+}
+
+.u-text-success {
+  color: $ligt-green;
+}
+
+.u-text-danger {
+  color: $danger;
 }

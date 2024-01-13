@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { useAppDispatch } from "../../app/hooks";
 import {
+  FilteredTransactions,
   Transaction,
   deleteTransaction,
 } from "../../features/accounts/accountsSlice";
 import "./TransacionList.scss";
-import { OperationsType } from "../OperationsCard/OperationsCard";
+import { OperationsType } from "../TransactionsDashboard/TransactionsDashboard";
 import Modal from "../ui/Modal/Modal";
 import AddEditTransaction from "../AddTransaction/AddEditTransaction";
 import useModal from "../../hooks/useModal";
@@ -15,7 +16,7 @@ import CategoriesStats from "./components/CategoriesChart/CategoriesStats/Catego
 
 type TransactionListProps = {
   operationType: OperationsType;
-  transactions: Transaction[];
+  transactions: FilteredTransactions;
 };
 
 const TransacionList = ({
@@ -29,12 +30,17 @@ const TransacionList = ({
   const [transactionToEdit, setTransactionToEdit] =
     useState<null | Transaction>(null);
 
-  const transactionsSum = TransactionsUtils.getTransactionsSum(transactions);
-  const categoriesTotalAmount =
-    TransactionsUtils.getCategoriesTotalAmount(transactions);
+  const selectedOperationTransactions = transactions[operationType];
+  const oppositeOperationType: OperationsType =
+    operationType === "expenses" ? "incomes" : "expenses";
 
-  const groupedTransactions =
-    TransactionsUtils.getGroupedTransactions(transactions);
+  const categoriesTotalAmount = TransactionsUtils.getCategoriesTotalAmount(
+    selectedOperationTransactions!
+  );
+
+  const groupedTransactions = TransactionsUtils.getGroupedTransactions(
+    selectedOperationTransactions!
+  );
 
   return (
     <>
@@ -46,9 +52,8 @@ const TransacionList = ({
         />
       </Modal>
 
-      {groupedTransactions && transactions?.length! > 0 ? (
+      {selectedOperationTransactions ? (
         <section className="transactions">
-          <p className="transactions__sum">Suma: {transactionsSum} PLN</p>
           <CategoriesChart categoriesTotalAmount={categoriesTotalAmount} />
           <CategoriesStats categoriesTotalAmount={categoriesTotalAmount} />
 

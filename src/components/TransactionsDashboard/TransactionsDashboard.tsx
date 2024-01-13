@@ -10,10 +10,11 @@ import PeriodDate from "./components/PeriodDate/PeriodDate";
 import { PeriodTab } from "../../utils/DateUtils";
 import TransacionList from "../TransacionList/TransacionList";
 import OperationTabs from "./components/OperationTabs/OperationTabs";
+import TransactionsSum from "./components/TransactionsSum/TransactionsSum";
 
 export type OperationsType = "expenses" | "incomes";
 
-const OperationsCard = () => {
+const TransactionsDashboard = () => {
   const [operationType, setOperationType] =
     useState<OperationsType>("expenses");
 
@@ -32,9 +33,10 @@ const OperationsCard = () => {
         accountName: activeAccountName!,
         period: currentPeriod,
         timestamp: date.transactionsTimestamp,
-        operationType,
       });
   });
+
+  const isTransactions = transactions && transactions[operationType];
 
   return (
     <>
@@ -54,7 +56,15 @@ const OperationsCard = () => {
           currentPeriod={currentPeriod}
         />
       </div>
-      {transactions ? (
+
+      {isTransactions ? (
+        <TransactionsSum
+          transactions={transactions}
+          operationType={operationType}
+        />
+      ) : null}
+
+      {transactions && transactions[operationType] ? (
         <TransacionList
           operationType={operationType}
           transactions={transactions}
@@ -64,4 +74,4 @@ const OperationsCard = () => {
   );
 };
 
-export default OperationsCard;
+export default TransactionsDashboard;

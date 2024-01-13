@@ -6,9 +6,9 @@ import {
   nanoid,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-import { OperationsType } from "../../components/OperationsCard/OperationsCard";
-import { DateUtils } from "../../utils";
-import { Period } from "../../components/OperationsCard/components/PeriodTabs/PeriodTabs";
+import { OperationsType } from "../../components/TransactionsDashboard/TransactionsDashboard";
+import { DateUtils, TransactionsUtils } from "../../utils";
+import { Period } from "../../components/TransactionsDashboard/components/PeriodTabs/PeriodTabs";
 
 export type Transaction = {
   id: string;
@@ -28,6 +28,8 @@ export type Account = {
   incomes: Transaction[];
   defaultAccount: boolean;
 };
+
+export type FilteredTransactions = Record<OperationsType, Transaction[]>;
 
 const accountsAdapter = createEntityAdapter<Account>({
   sortComparer: (a, b) => a.name.localeCompare(b.name),
@@ -142,31 +144,31 @@ export const selectTransactions = createSelector(
     (state, { period }: { period: Period }) => period,
     (state, { timestamp }: { timestamp: [number, number] | number }) =>
       timestamp,
-    (state, { operationType }: { operationType: OperationsType }) =>
-      operationType,
   ],
-  (accounts, accountName, period, timestamp, operationType) => {
+  (accounts, accountName, period, timestamp) => {
     const account = accounts.find((acc) => acc.name === accountName);
+    let filteredTransactions: FilteredTransactions = {
+      expenses: [],
+      incomes: [],
+    };
 
-    const transactions =
-      operationType === "expenses" ? account?.expenses : account?.incomes;
+    if (account) {
+      const filteredExpenses = TransactionsUtils.filterTransactions(
+        account.expenses,
+        period,
+        timestamp
+      );
+      const filteredIncomes = TransactionsUtils.filterTransactions(
+        account.incomes,
+        period,
+        timestamp
+      );
 
-    return transactions?.filter((transaction) => {
-      switch (period) {
-        case "Dzień":
-          return DateUtils.isToday(transaction.timestamp);
-        case "Miesiąc":
-          return DateUtils.isCurrentMonth(transaction.timestamp);
-        case "Rok":
-          return DateUtils.isCurrentYear(transaction.timestamp);
-        default:
-          return (
-            transaction.timestamp >= (timestamp as [number, number])[0] ||
-            (DateUtils.isToday(transaction.timestamp) &&
-              transaction.timestamp <= (timestamp as [number, number])[1])
-          );
-      }
-    });
+      filteredTransactions.expenses = filteredExpenses;
+      filteredTransactions.incomes = filteredIncomes;
+    }
+
+    return filteredTransactions;
   }
 );
 

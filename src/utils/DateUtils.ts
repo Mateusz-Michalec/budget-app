@@ -1,4 +1,4 @@
-import { Period } from "../components/OperationsCard/components/PeriodTabs/PeriodTabs";
+import { Period } from "../components/TransactionsDashboard/components/PeriodTabs/PeriodTabs";
 
 export type PeriodTab = {
   date: Date | null;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { OperationsType } from "../OperationsCard/OperationsCard";
+import { OperationsType } from "../TransactionsDashboard/TransactionsDashboard";
 import "./AddEditTransaction.scss";
 import TransactionDescription from "./components/TransactionDescription/TransactionDescription";
 import { DateUtils } from "../../utils";

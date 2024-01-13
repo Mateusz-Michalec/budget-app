@@ -1,5 +1,5 @@
 import React from "react";
-import { OperationsType } from "../../OperationsCard";
+import { OperationsType } from "../../TransactionsDashboard";
 import useModal from "../../../../hooks/useModal";
 import Modal from "../../../ui/Modal/Modal";
 import AddEditTransaction from "../../../AddTransaction/AddEditTransaction";
