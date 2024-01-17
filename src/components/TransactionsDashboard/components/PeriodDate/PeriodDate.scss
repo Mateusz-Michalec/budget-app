@@ -15,8 +15,10 @@
     }
   }
 
-  h1 {
+  &__label {
     font-size: large;
-    margin-top: $m-1;
+    background-color: rgba($color: white, $alpha: 0.1);
+    border-radius: $br-1;
+    padding: $p-1;
   }
 }

@@ -6,6 +6,8 @@ import {
 } from "../features/accounts/accountsSlice";
 import DateUtils from "./DateUtils";
 
+export type SortType = "asc" | "desc";
+
 type Icon =
   | "bag"
   | "cart"
@@ -15,7 +17,7 @@ type Icon =
   | "airplane"
   | "controller";
 
-type TransactionIcon = {
+export type TransactionIcon = {
   icon: Icon;
   bgColor: string;
 };
@@ -139,6 +141,18 @@ const filterTransactions = (
     }
   });
 
+const sortCategoriesTotalAmount = (
+  categoriesTotalAmount: Record<string, number>,
+  sortType: SortType
+) => {
+  const keyValueArr = Object.entries(categoriesTotalAmount);
+
+  if (sortType === "asc") keyValueArr.sort((a, b) => a[1] - b[1]);
+  else keyValueArr.sort((a, b) => b[1] - a[1]);
+
+  return Object.fromEntries(keyValueArr);
+};
+
 export default {
   categories,
   getTransactionIcon,
@@ -148,4 +162,5 @@ export default {
   getTransactionsSumDifference,
   getCategoriesTotalAmount,
   filterTransactions,
+  sortCategoriesTotalAmount,
 };

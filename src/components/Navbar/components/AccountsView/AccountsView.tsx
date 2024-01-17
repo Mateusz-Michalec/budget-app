@@ -2,27 +2,26 @@ import AddNewAccount from "../AddNewAccount/AddNewAccount";
 import { useAppSelector } from "../../../../app/hooks";
 import {
   getAccountBalanceByName,
-  getDefaultAccount,
+  getDefaultAccountName,
   selectAccountNames,
 } from "../../../../features/accounts/accountsSlice";
 import { useEffect, useState } from "react";
-import useModal from "../../../../hooks/useModal";
-import Modal from "../../../ui/Modal/Modal";
+import useModal from "../../../ui/Modal/useModal";
 
 const AccountsView = () => {
   const accountNames = useAppSelector(selectAccountNames);
-  const defaultAccount = useAppSelector(getDefaultAccount);
+  const defaultAccount = useAppSelector(getDefaultAccountName);
 
-  const [activeAccount, setActiveAccount] = useState(defaultAccount?.name);
+  const [activeAccount, setActiveAccount] = useState(defaultAccount);
   const activeAccountBalance = useAppSelector((state) =>
     getAccountBalanceByName(state, activeAccount)
   );
 
   useEffect(() => {
-    setActiveAccount(defaultAccount?.name);
+    setActiveAccount(defaultAccount);
   }, [defaultAccount]);
 
-  const { modalRef, isModal, showModal, closeModal } = useModal();
+  const { Modal, showModal, closeModal } = useModal();
 
   return (
     <div className="nav__account">
@@ -52,7 +51,7 @@ const AccountsView = () => {
             <i className="bi bi-database-add"></i>
             <span>Dodaj konto</span>
           </button>
-          <Modal isModal={isModal} ref={modalRef} closeModal={closeModal}>
+          <Modal>
             <AddNewAccount closeModal={closeModal} />
           </Modal>
         </>

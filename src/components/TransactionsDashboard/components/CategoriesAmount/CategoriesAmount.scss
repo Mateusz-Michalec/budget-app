@@ -1,0 +1,26 @@
+@import "../../../../assets/variables.scss";
+
+.categories-amount {
+  overflow-x: auto;
+  padding: $p-2;
+  border-radius: $br-2;
+  border: 2px solid rgba($color: white, $alpha: 0.1);
+  display: flex;
+  gap: $g-4;
+  margin-bottom: $m-3;
+
+  &__sort-btns {
+    display: flex;
+    flex-direction: column;
+    gap: $g-2;
+    .bi {
+      font-size: $i-2;
+    }
+  }
+
+  &__category {
+    display: flex;
+    align-items: center;
+    gap: $g-1;
+  }
+}

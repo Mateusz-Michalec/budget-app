@@ -1,7 +1,6 @@
 import React from "react";
 import { OperationsType } from "../../TransactionsDashboard";
-import useModal from "../../../../hooks/useModal";
-import Modal from "../../../ui/Modal/Modal";
+import useModal from "../../../ui/Modal/useModal";
 import AddEditTransaction from "../../../AddTransaction/AddEditTransaction";
 import "./OperationsTabs.scss";
 import { useAppSelector } from "../../../../app/hooks";
@@ -17,13 +16,13 @@ const OperationTabs = ({
   operationType,
   setOperationType,
 }: OperationTabsProps) => {
-  const { modalRef, isModal, closeModal, showModal } = useModal();
+  const { Modal, closeModal, showModal } = useModal();
 
   const accountNames = useAppSelector(selectAccountNames);
 
   return (
     <>
-      <Modal ref={modalRef} isModal={isModal} closeModal={closeModal}>
+      <Modal>
         {accountNames.length > 0 ? (
           <AddEditTransaction
             operationType={operationType}

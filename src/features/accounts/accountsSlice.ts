@@ -121,9 +121,9 @@ export const getAccountIdByName = createSelector(
     accounts.find((acc) => acc.name === accountName)?.id
 );
 
-export const getDefaultAccount = createSelector(
+export const getDefaultAccountName = createSelector(
   [selectAllAccounts],
-  (accounts) => accounts.find((acc) => acc.defaultAccount)
+  (accounts) => accounts.find((acc) => acc.defaultAccount)?.name
 );
 
 export const getAccountBalanceByName = createSelector(
@@ -140,12 +140,15 @@ export const getAccountBalanceByName = createSelector(
 export const selectTransactions = createSelector(
   [
     selectAllAccounts,
-    (state, { accountName }: { accountName: string }) => accountName,
+    (state, { accountName }: { accountName: string | undefined }) =>
+      accountName,
     (state, { period }: { period: Period }) => period,
-    (state, { timestamp }: { timestamp: [number, number] | number }) =>
+    (state, { timestamp }: { timestamp: [number, number] | number | null }) =>
       timestamp,
   ],
   (accounts, accountName, period, timestamp) => {
+    if (!timestamp || !accountName) return null;
+
     const account = accounts.find((acc) => acc.name === accountName);
     let filteredTransactions: FilteredTransactions = {
       expenses: [],

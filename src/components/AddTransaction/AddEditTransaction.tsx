@@ -9,7 +9,7 @@ import {
   addTransaction,
   editTransaction,
   getAccountIdByName,
-  getDefaultAccount,
+  getDefaultAccountName,
   selectAccountNames,
 } from "../../features/accounts/accountsSlice";
 import { DatePicker } from "../../utils/DateUtils";
@@ -43,7 +43,7 @@ const AddEditTransaction = ({
 
   const accountNames = useAppSelector(selectAccountNames);
 
-  const defaultAccount = useAppSelector(getDefaultAccount);
+  const defaultAccount = useAppSelector(getDefaultAccountName);
   const [activeAccount, setActiveAccount] = useState(defaultAccount?.name);
   const accountId = useAppSelector((state) =>
     getAccountIdByName(state, activeAccount)

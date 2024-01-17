@@ -61,7 +61,7 @@ const PeriodDate = ({ date, setDate, currentPeriod }: PeriodDateProps) => {
           </div>
         </>
       ) : (
-        <h1>{date.label}</h1>
+        <h1 className="period-date__label">{date.label}</h1>
       )}
     </header>
   );

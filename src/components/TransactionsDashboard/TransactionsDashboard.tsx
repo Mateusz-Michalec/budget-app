@@ -1,16 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import PeriodTabs, { Period } from "./components/PeriodTabs/PeriodTabs";
-import { DateUtils } from "../../utils";
+import { DateUtils, TransactionsUtils } from "../../utils";
 import { useAppSelector } from "../../app/hooks";
 import {
-  getDefaultAccount,
+  getDefaultAccountName,
   selectTransactions,
 } from "../../features/accounts/accountsSlice";
 import PeriodDate from "./components/PeriodDate/PeriodDate";
 import { PeriodTab } from "../../utils/DateUtils";
-import TransacionList from "../TransacionList/TransacionList";
+import TransacionList from "./components/TransacionList/TransacionList";
 import OperationTabs from "./components/OperationTabs/OperationTabs";
 import TransactionsSum from "./components/TransactionsSum/TransactionsSum";
+import CategoriesChart from "./components/CategoriesChart/CategoriesChart";
+import CategoriesAmount from "./components/CategoriesAmount/CategoriesAmount";
 
 export type OperationsType = "expenses" | "incomes";
 
@@ -24,19 +26,23 @@ const TransactionsDashboard = () => {
     DateUtils.getInitialPeriodTabData(currentPeriod)
   );
 
-  // Transactions
-  const activeAccountName = useAppSelector(getDefaultAccount)?.name;
+  const activeAccount = useAppSelector(getDefaultAccountName);
 
-  const transactions = useAppSelector((state) => {
-    if (date.transactionsTimestamp)
-      return selectTransactions(state, {
-        accountName: activeAccountName!,
-        period: currentPeriod,
-        timestamp: date.transactionsTimestamp,
-      });
-  });
+  const transactions = useAppSelector((state) =>
+    selectTransactions(state, {
+      accountName: activeAccount,
+      period: currentPeriod,
+      timestamp: date.transactionsTimestamp,
+    })
+  );
 
-  const isTransactions = transactions && transactions[operationType];
+  const operationTransactions = transactions
+    ? transactions[operationType]
+    : null;
+
+  const categoriesTotalAmount = operationTransactions
+    ? TransactionsUtils.getCategoriesTotalAmount(operationTransactions)
+    : null;
 
   return (
     <>
@@ -57,19 +63,22 @@ const TransactionsDashboard = () => {
         />
       </div>
 
-      {isTransactions ? (
-        <TransactionsSum
-          transactions={transactions}
-          operationType={operationType}
-        />
-      ) : null}
-
-      {transactions && transactions[operationType] ? (
-        <TransacionList
-          operationType={operationType}
-          transactions={transactions}
-        />
-      ) : null}
+      {operationTransactions && operationTransactions?.length > 0 ? (
+        <>
+          <TransactionsSum
+            transactions={transactions!}
+            operationType={operationType}
+          />
+          <CategoriesChart categoriesTotalAmount={categoriesTotalAmount!} />
+          <CategoriesAmount categoriesTotalAmount={categoriesTotalAmount!} />
+          <TransacionList
+            operationType={operationType}
+            operationTransactions={operationTransactions}
+          />
+        </>
+      ) : (
+        <p className="u-text-muted-center">Brak transakcji</p>
+      )}
     </>
   );
 };
