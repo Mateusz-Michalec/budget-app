@@ -1,0 +1,20 @@
+@import "../../assets/variables.scss";
+
+.accounts-dashboard {
+  display: flex;
+  flex-direction: column;
+  margin-top: $m-1;
+
+  &__account {
+    background: rgba($color: white, $alpha: 0.1);
+    border-radius: $br-1;
+    padding: $p-1;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__sum-balance {
+    margin-top: $m-1;
+    text-align: center;
+  }
+}

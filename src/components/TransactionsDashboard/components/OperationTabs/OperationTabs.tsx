@@ -5,7 +5,7 @@ import AddEditTransaction from "../../../AddTransaction/AddEditTransaction";
 import "./OperationsTabs.scss";
 import { useAppSelector } from "../../../../app/hooks";
 import { selectAccountNames } from "../../../../features/accounts/accountsSlice";
-import AddNewAccount from "../../../Navbar/components/AddNewAccount/AddNewAccount";
+import AddEditAccount from "../../../AddEditAccount/AddEditAccount";
 
 type OperationTabsProps = {
   operationType: OperationsType;
@@ -16,7 +16,7 @@ const OperationTabs = ({
   operationType,
   setOperationType,
 }: OperationTabsProps) => {
-  const { Modal, closeModal, showModal } = useModal();
+  const { Modal, showModal } = useModal();
 
   const accountNames = useAppSelector(selectAccountNames);
 
@@ -24,12 +24,9 @@ const OperationTabs = ({
     <>
       <Modal>
         {accountNames.length > 0 ? (
-          <AddEditTransaction
-            operationType={operationType}
-            closeModal={closeModal}
-          />
+          <AddEditTransaction operationType={operationType} />
         ) : (
-          <AddNewAccount closeModal={closeModal} />
+          <AddEditAccount />
         )}
       </Modal>
       <ul className="operation-tabs">

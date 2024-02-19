@@ -22,7 +22,7 @@ const TransacionList = ({
 }: TransactionListProps) => {
   const dispatch = useAppDispatch();
 
-  const { Modal, closeModal, showModal } = useModal();
+  const { Modal, showModal } = useModal();
 
   const [transactionToEdit, setTransactionToEdit] =
     useState<null | Transaction>(null);
@@ -37,7 +37,6 @@ const TransacionList = ({
         <AddEditTransaction
           transaction={transactionToEdit}
           operationType={operationType}
-          closeModal={closeModal}
         />
       </Modal>
 

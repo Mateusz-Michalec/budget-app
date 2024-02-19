@@ -1,23 +1,36 @@
 import React, { useState } from "react";
 
-import { useAppDispatch } from "../../../../app/hooks";
-import { addAccount } from "../../../../features/accounts/accountsSlice";
-import "./AddNewAccout.scss";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import {
+  addAccount,
+  selectAccountById,
+} from "../../features/accounts/accountsSlice";
+import "./AddEditAccount.scss";
+import useModal from "../ui/Modal/useModal";
 
-type AddNewAccountProps = {
-  closeModal: () => void;
+type AddEditAccountProps = {
+  accountIdToEdit?: string | null;
 };
 
-const AddNewAccount = ({ closeModal }: AddNewAccountProps) => {
-  const [accountName, setAccountName] = useState("");
-  const [accountBalance, setAccountBalance] = useState<number | string>("");
+const AddEditAccount = ({ accountIdToEdit }: AddEditAccountProps) => {
+  const accountToEdit = accountIdToEdit
+    ? useAppSelector((state) => selectAccountById(state, accountIdToEdit))
+    : null;
+
+  const [accountName, setAccountName] = useState(
+    accountToEdit ? accountToEdit.name : ""
+  );
+  const [accountBalance, setAccountBalance] = useState<number | null>(
+    accountToEdit ? accountToEdit.balance : null
+  );
+
+  const { closeModal } = useModal();
 
   const dispatch = useAppDispatch();
 
-  const isDataValid =
-    accountName.length > 3 && typeof accountBalance === "number";
+  const isDataValid = accountName.length > 4 && accountBalance;
 
-  const addNewAccount = () => {
+  const AddEditAccount = () => {
     if (isDataValid) {
       dispatch(addAccount({ name: accountName, balance: accountBalance }));
       closeModal();
@@ -43,14 +56,14 @@ const AddNewAccount = ({ closeModal }: AddNewAccountProps) => {
         <input
           id="accountAmount"
           type="number"
-          value={accountBalance}
+          value={accountBalance ? accountBalance : ""}
           onChange={(e) => setAccountBalance(Number(e.target.value))}
         />
       </div>
 
       <button
         disabled={!isDataValid}
-        onClick={() => addNewAccount()}
+        onClick={() => AddEditAccount()}
         className={`u-btn ${isDataValid ? "" : "u-muted"}`}
       >
         Dodaj
@@ -59,4 +72,4 @@ const AddNewAccount = ({ closeModal }: AddNewAccountProps) => {
   );
 };
 
-export default AddNewAccount;
+export default AddEditAccount;

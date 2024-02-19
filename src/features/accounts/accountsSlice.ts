@@ -7,7 +7,7 @@ import {
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import { OperationsType } from "../../components/TransactionsDashboard/TransactionsDashboard";
-import { DateUtils, TransactionsUtils } from "../../utils";
+import { TransactionsUtils } from "../../utils";
 import { Period } from "../../components/TransactionsDashboard/components/PeriodTabs/PeriodTabs";
 
 export type Transaction = {
@@ -53,6 +53,7 @@ const accountsSlice = createSlice({
         defaultAccount: isEmpty ? false : true,
       });
     },
+    deleteAccount(state, action: PayloadAction<string>) {},
     hydrateAccounts: (state, action) => {
       return action.payload;
     },

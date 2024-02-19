@@ -75,7 +75,7 @@
 .u-btn {
   display: block;
   margin: 0 auto;
-  background: $greyish-green;
+  background: $greyish-white;
   padding: $p-1 $p-3;
   border-radius: $br-1;
   font-weight: bold;
@@ -105,6 +105,15 @@
     position: absolute;
     top: -$p-3;
     background-color: inherit;
+  }
+}
+
+.u-icon-btn-group {
+  display: flex;
+  gap: $g-2;
+
+  button {
+    @extend .u-muted;
   }
 }
 

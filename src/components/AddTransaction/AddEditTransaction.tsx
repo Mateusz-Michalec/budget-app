@@ -13,19 +13,20 @@ import {
   selectAccountNames,
 } from "../../features/accounts/accountsSlice";
 import { DatePicker } from "../../utils/DateUtils";
+import useModal from "../ui/Modal/useModal";
 
 type AddEditTransactionProps = {
-  closeModal: () => void | null;
   operationType: OperationsType;
   transaction?: null | Transaction;
 };
 
 const AddEditTransaction = ({
   operationType,
-  closeModal,
   transaction,
 }: AddEditTransactionProps) => {
   const dispatch = useAppDispatch();
+
+  const { closeModal } = useModal();
 
   const [amount, setAmount] = useState<number | string>(
     transaction?.amount || ""
@@ -42,9 +43,9 @@ const AddEditTransaction = ({
     typeof amount === "number" && description.length > 0 && category.length > 0;
 
   const accountNames = useAppSelector(selectAccountNames);
-
   const defaultAccount = useAppSelector(getDefaultAccountName);
-  const [activeAccount, setActiveAccount] = useState(defaultAccount?.name);
+
+  const [activeAccount, setActiveAccount] = useState(defaultAccount);
   const accountId = useAppSelector((state) =>
     getAccountIdByName(state, activeAccount)
   );

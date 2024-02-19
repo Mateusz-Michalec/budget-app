@@ -1,4 +1,4 @@
-import AddNewAccount from "../AddNewAccount/AddNewAccount";
+import AddEditAccount from "../../../AddEditAccount/AddEditAccount";
 import { useAppSelector } from "../../../../app/hooks";
 import {
   getAccountBalanceByName,
@@ -7,6 +7,7 @@ import {
 } from "../../../../features/accounts/accountsSlice";
 import { useEffect, useState } from "react";
 import useModal from "../../../ui/Modal/useModal";
+import "./AccountsView.scss";
 
 const AccountsView = () => {
   const accountNames = useAppSelector(selectAccountNames);
@@ -24,9 +25,9 @@ const AccountsView = () => {
   const { Modal, showModal, closeModal } = useModal();
 
   return (
-    <div className="nav__account">
+    <div>
       {accountNames.length > 0 ? (
-        <>
+        <div className="accounts-view">
           <select
             value={activeAccount}
             onChange={(e) => setActiveAccount(e.target.value)}
@@ -40,7 +41,7 @@ const AccountsView = () => {
           <span>
             <b>{activeAccountBalance} zł</b>
           </span>
-        </>
+        </div>
       ) : (
         <>
           <button
@@ -52,7 +53,7 @@ const AccountsView = () => {
             <span>Dodaj konto</span>
           </button>
           <Modal>
-            <AddNewAccount closeModal={closeModal} />
+            <AddEditAccount closeModal={closeModal} />
           </Modal>
         </>
       )}
